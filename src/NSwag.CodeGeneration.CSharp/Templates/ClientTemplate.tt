@@ -82,10 +82,6 @@ public partial interface I<#=Model.Class#>
     private <#=Model.HttpClientType#> _httpClient; 
 
 <#}#>
-<#if(Model.InjectServiceFabric){#>
-    private Renweb.Core.ApiGateway.Communication.ServiceClient _sfClient; 
-
-<#}#>
 <#if(Model.HasConfigurationClass){#>
     public <#=Model.Class#>(<#=Model.ConfigurationClass#> configuration<#if(Model.InjectHttpClient){#>, <#=Model.HttpClientType#> httpClient<#}#>) : base(configuration)
     {
@@ -103,10 +99,6 @@ public partial interface I<#=Model.Class#>
     public <#=Model.Class#>(<#=Model.HttpClientType#> httpClient)
     {
         _httpClient = httpClient; 
-<#}else if(Model.InjectServiceFabric){#>
-    public <#=Model.Class#>(Renweb.Core.ApiGateway.Communication.ServiceClient sfClient)
-    {
-        _sfClient = sfClient ?? throw new System.ArgumentNullException(nameof(sfClient));
 <#}else{#>
     public <#=Model.Class#>()
     {
@@ -213,7 +205,7 @@ public partial interface I<#=Model.Class#>
 <#  }#>
 <#}#>
         var urlBuilder_ = new System.Text.StringBuilder();
-        urlBuilder_.Append(<#if(Model.UseBaseUrl){#>BaseUrl).Append("/<#}else{#>"<#}#><#=operation.Path#><#if(operation.HasQueryParameters){#>?<#}#>");
+        urlBuilder_.Append(<#if(Model.UseBaseUrl && !Model.InjectServiceFabric){#>BaseUrl).Append("/<#}else{#>"<#}#><#=operation.Path#><#if(operation.HasQueryParameters){#>?<#}#>");
 <#foreach(var parameter in operation.PathParameters){#>
 <#  if(parameter.IsOptional){#>
         if (<#=parameter.VariableName#> != null)
@@ -479,7 +471,8 @@ urlBuilder_.Append("<#=parameter.Name#>=").Append(System.Uri.EscapeDataString(Sy
                 }
             }
 <#      }else/*InjectServiceFabric*/{#>
-        return await _sfClient.<#=operation.HttpMethod.ToString().ToUpperInvariant()#>Async(urlBuilder_.ToString()<#if(operation.HasFormParameters){#>, <#}#><#foreach(var parameter in operation.FormParameters){#><#=parameter.VariableName#><#}#>);
+        var serviceClient = new Renweb.Core.ApiGateway.Communication.ServiceClient(new System.Uri(BaseUrl));
+        return await serviceClient.<#=operation.HttpMethod.ToString().ToUpperInvariant()#>Async(urlBuilder_.ToString()<#if(operation.HasFormParameters){#>, <#}#><#foreach(var parameter in operation.FormParameters){#><#=parameter.VariableName#><#}#>);
 <#      }#>
 <#if(!Model.InjectServiceFabric){#>
         }
