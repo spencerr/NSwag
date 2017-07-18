@@ -24,7 +24,7 @@ public partial interface I<#=Model.Class#>
 <#      if(operation.IsDeprecated){#>
     [System.Obsolete]
 <#      }#>
-    <#=operation.ResultType#> <#=operation.ActualOperationName#>Async(<#foreach(var parameter in operation.Parameters){#><#=parameter.Type#> <#=parameter.VariableName#><#if(Model.GenerateOptionalParameters && parameter.IsOptional){#> = null<#}#><#if(!parameter.IsLast){#>, <#}}#>);
+    <#if(!Model.InjectServiceFabric){#><#=operation.ResultType#><#}else{#>System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage><#}#> <#=operation.ActualOperationName#>Async(<#foreach(var parameter in operation.Parameters){#><#=parameter.Type#> <#=parameter.VariableName#><#if(Model.GenerateOptionalParameters && parameter.IsOptional){#> = null<#}#><#if(!parameter.IsLast){#>, <#}}#>);
 
 <#  }#>
 <#  if(Model.GenerateSyncMethods){#>
@@ -43,7 +43,7 @@ public partial interface I<#=Model.Class#>
 <#      if(operation.IsDeprecated){#>
     [System.Obsolete]
 <#      }#>
-    <#=operation.UnwrappedResultType#> <#=operation.ActualOperationName#>(<#foreach(var parameter in operation.Parameters){#><#=parameter.Type#> <#=parameter.VariableName#><#if(Model.GenerateOptionalParameters && parameter.IsOptional){#> = null<#}#><#if(!parameter.IsLast){#>, <#}}#>);
+    <#if(!Model.InjectServiceFabric){#><#=operation.UnwrappedResultType#><#}else{#>System.Net.Http.HttpResponseMessage<#}#> <#=operation.ActualOperationName#>(<#foreach(var parameter in operation.Parameters){#><#=parameter.Type#> <#=parameter.VariableName#><#if(Model.GenerateOptionalParameters && parameter.IsOptional){#> = null<#}#><#if(!parameter.IsLast){#>, <#}}#>);
 
 <#  }#>
 <#  if(operation.HasSummary){#>
@@ -62,7 +62,7 @@ public partial interface I<#=Model.Class#>
 <#      if(operation.IsDeprecated){#>
     [System.Obsolete]
 <#      }#>
-    <#=operation.ResultType#> <#=operation.ActualOperationName#>Async(<#foreach(var parameter in operation.Parameters){#><#=parameter.Type#> <#=parameter.VariableName#><#if(Model.GenerateOptionalParameters && parameter.IsOptional){#> = null<#}#>, <#}#>System.Threading.CancellationToken cancellationToken<#if(Model.GenerateOptionalParameters){#> = default(System.Threading.CancellationToken)<#}#>);
+    <#if(!Model.InjectServiceFabric){#><#=operation.ResultType#><#}else{#>System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage><#}#> <#=operation.ActualOperationName#>Async(<#foreach(var parameter in operation.Parameters){#><#=parameter.Type#> <#=parameter.VariableName#><#if(Model.GenerateOptionalParameters && parameter.IsOptional){#> = null<#}#>, <#}#>System.Threading.CancellationToken cancellationToken<#if(Model.GenerateOptionalParameters){#> = default(System.Threading.CancellationToken)<#}#>);
 
 <#}#>
 }
@@ -82,6 +82,10 @@ public partial interface I<#=Model.Class#>
     private <#=Model.HttpClientType#> _httpClient; 
 
 <#}#>
+<#if(Model.InjectServiceFabric){#>
+    private Renweb.Core.ApiGateway.Communication.ServiceClient _sfClient; 
+
+<#}#>
 <#if(Model.HasConfigurationClass){#>
     public <#=Model.Class#>(<#=Model.ConfigurationClass#> configuration<#if(Model.InjectHttpClient){#>, <#=Model.HttpClientType#> httpClient<#}#>) : base(configuration)
     {
@@ -99,6 +103,10 @@ public partial interface I<#=Model.Class#>
     public <#=Model.Class#>(<#=Model.HttpClientType#> httpClient)
     {
         _httpClient = httpClient; 
+<#}else if(Model.InjectServiceFabric){#>
+    public <#=Model.Class#>(Renweb.Core.ApiGateway.Communication.ServiceClient sfClient)
+    {
+        _sfClient = sfClient ?? throw new System.ArgumentNullException(nameof(sfClient));
 <#}else{#>
     public <#=Model.Class#>()
     {
@@ -143,7 +151,7 @@ public partial interface I<#=Model.Class#>
 <#  if(operation.IsDeprecated){#>
     [System.Obsolete]
 <#  }#>
-    <#=operation.MethodAccessModifier#> <#=operation.ResultType#> <#=operation.ActualOperationName#>Async(<#foreach(var parameter in operation.Parameters){#><#=parameter.Type#> <#=parameter.VariableName#><#if(Model.GenerateOptionalParameters && parameter.IsOptional){#> = null<#}#><#if(!parameter.IsLast){#>, <#}}#>)
+    <#=operation.MethodAccessModifier#> <#if(!Model.InjectServiceFabric){#><#=operation.ResultType#><#}else{#>System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage><#}#> <#=operation.ActualOperationName#>Async(<#foreach(var parameter in operation.Parameters){#><#=parameter.Type#> <#=parameter.VariableName#><#if(Model.GenerateOptionalParameters && parameter.IsOptional){#> = null<#}#><#if(!parameter.IsLast){#>, <#}}#>)
     {
         return <#=operation.ActualOperationName#>Async(<#foreach(var parameter in operation.Parameters){#><#=parameter.VariableName#>, <#}#>System.Threading.CancellationToken.None);
     }
@@ -165,7 +173,7 @@ public partial interface I<#=Model.Class#>
 <#  if(operation.IsDeprecated){#>
     [System.Obsolete]
 <#  }#>
-    <#=operation.MethodAccessModifier#> <#=operation.UnwrappedResultType#> <#=operation.ActualOperationName#>(<#foreach(var parameter in operation.Parameters){#><#=parameter.Type#> <#=parameter.VariableName#><#if(Model.GenerateOptionalParameters && parameter.IsOptional){#> = null<#}#><#if(!parameter.IsLast){#>, <#}}#>)
+    <#=operation.MethodAccessModifier#> <#if(!Model.InjectServiceFabric){#><#=operation.UnwrappedResultType#><#}else{#>System.Net.Http.HttpResponseMessage<#}#> <#=operation.ActualOperationName#>(<#foreach(var parameter in operation.Parameters){#><#=parameter.Type#> <#=parameter.VariableName#><#if(Model.GenerateOptionalParameters && parameter.IsOptional){#> = null<#}#><#if(!parameter.IsLast){#>, <#}}#>)
     {
         <#if(operation.HasResult){#>return <#}#>System.Threading.Tasks.Task.Run(async () => await <#=operation.ActualOperationName#>Async(<#foreach(var parameter in operation.Parameters){#><#=parameter.VariableName#>, <#}#>System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
     }
@@ -188,7 +196,7 @@ public partial interface I<#=Model.Class#>
 <#  if(operation.IsDeprecated){#>
     [System.Obsolete]
 <#  }#>
-    <#=operation.MethodAccessModifier#> async <#=operation.ResultType#> <#=operation.ActualOperationName#>Async(<#foreach(var parameter in operation.Parameters){#><#=parameter.Type#> <#=parameter.VariableName#><#if(Model.GenerateOptionalParameters && parameter.IsOptional){#> = null<#}#>, <#}#>System.Threading.CancellationToken cancellationToken<#if(Model.GenerateOptionalParameters){#> = default(System.Threading.CancellationToken)<#}#>)
+    <#=operation.MethodAccessModifier#> async <#if(!Model.InjectServiceFabric){#><#=operation.ResultType#><#}else{#>System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage><#}#> <#=operation.ActualOperationName#>Async(<#foreach(var parameter in operation.Parameters){#><#=parameter.Type#> <#=parameter.VariableName#><#if(Model.GenerateOptionalParameters && parameter.IsOptional){#> = null<#}#>, <#}#>System.Threading.CancellationToken cancellationToken<#if(Model.GenerateOptionalParameters){#> = default(System.Threading.CancellationToken)<#}#>)
     {
 <#foreach(var parameter in operation.PathParameters){#>
 <#  if(parameter.IsRequired){#>
@@ -244,9 +252,10 @@ urlBuilder_.Append("<#=parameter.Name#>=").Append(System.Uri.EscapeDataString(Sy
         var client_ = _httpClient;
 <#      }else if(Model.UseHttpClientCreationMethod){#>
         var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
-<#      }else{#>
+<#      }else if(!Model.InjectServiceFabric){#>
         var client_ = new <#=Model.HttpClientType#>();
 <#      }#>
+<#      if(!Model.InjectServiceFabric){#>
         try
         {
 <#      if(Model.UseHttpRequestMessageCreationMethod){#>
@@ -469,6 +478,10 @@ urlBuilder_.Append("<#=parameter.Name#>=").Append(System.Uri.EscapeDataString(Sy
                         response_.Dispose();
                 }
             }
+<#      }else/*InjectServiceFabric*/{#>
+        return await _sfClient.<#=operation.HttpMethod.ToString().ToUpperInvariant()#>Async(urlBuilder_.ToString()<#if(operation.HasFormParameters){#>, <#}#><#foreach(var parameter in operation.FormParameters){#><#=parameter.VariableName#><#}#>);
+<#      }#>
+<#if(!Model.InjectServiceFabric){#>
         }
         finally
         {
@@ -477,6 +490,7 @@ urlBuilder_.Append("<#=parameter.Name#>=").Append(System.Uri.EscapeDataString(Sy
                 client_.Dispose();
 <#}#>
         }
+<#}#>
     }
 
 <#}#>

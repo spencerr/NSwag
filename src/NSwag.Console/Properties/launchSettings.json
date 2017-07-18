@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "NSwag.Console": {
+      "commandName": "Project",
+      "commandLineArgs": "run C:\\Repos\\renweb-backendservice\\ManagementService\\AcademicManagementService\\AcademicManagement.Debug.nswag"
+    }
+  }
+}

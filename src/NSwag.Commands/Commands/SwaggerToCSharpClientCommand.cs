@@ -180,6 +180,13 @@ namespace NSwag.Commands
             set { Settings.GenerateUpdateJsonSerializerSettingsMethod = value; }
         }
 
+        [Argument(Name = "InjectServiceFabric", IsRequired = false, Description = "Specifies whether an ServiceFabricClient instance is injected.")]
+        public bool InjectServiceFabric
+        {
+            get { return Settings.InjectServiceFabric; }
+            set { Settings.InjectServiceFabric = value; }
+        }
+
         public override async Task<object> RunAsync(CommandLineProcessor processor, IConsoleHost host)
         {
             var result = await RunAsync();

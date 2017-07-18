@@ -121,6 +121,9 @@ namespace NSwag.CodeGeneration.CSharp.Models
         /// <summary>Gets or sets a value indicating whether to generate the UpdateJsonSerializerSettings method.</summary>
         public bool GenerateUpdateJsonSerializerSettingsMethod => _settings.GenerateUpdateJsonSerializerSettingsMethod;
 
+        /// <summary>Gets or sets a value indicating whether to generate service fabric client injection.</summary>
+        public bool InjectServiceFabric => _settings.InjectServiceFabric;
+
         /// <summary>Gets the JSON serializer parameter code.</summary>
         public string JsonSerializerParameterCode
         {
