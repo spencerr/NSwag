@@ -74,12 +74,18 @@ public partial interface I<#=Model.Class#>
 
 {
     private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
-<#if(Model.UseBaseUrl){#>
+<#if(Model.UseBaseUrl && !Model.InjectServiceFabric){#>
     private string _baseUrl = "<#=Model.BaseUrl#>";
     
 <#}#>
 <#if(Model.InjectHttpClient){#>
     private <#=Model.HttpClientType#> _httpClient; 
+
+<#}#>
+<#if(Model.InjectServiceFabric){#>
+    private System.Uri _baseUrl;
+
+    private Renweb.Core.ApiGateway.Communication.ServiceClient _serviceClient;
 
 <#}#>
 <#if(Model.HasConfigurationClass){#>
@@ -89,9 +95,9 @@ public partial interface I<#=Model.Class#>
         _httpClient = httpClient; 
 <#  }#>
 <#}else if(Model.UseBaseUrl && string.IsNullOrEmpty(Model.BaseUrl)){#>
-    public <#=Model.Class#>(string baseUrl<#if(Model.InjectHttpClient){#>, <#=Model.HttpClientType#> httpClient<#}#>)
+    public <#=Model.Class#>(<#if(!Model.InjectServiceFabric){#>string<#}else{#>System.Uri<#}#> baseUrl<#if(Model.InjectHttpClient){#>, <#=Model.HttpClientType#> httpClient<#}#>)
     {
-        BaseUrl = baseUrl; 
+        _baseUrl = baseUrl; 
 <#  if(Model.InjectHttpClient){#>
         _httpClient = httpClient; 
 <#  }#>
@@ -112,7 +118,7 @@ public partial interface I<#=Model.Class#>
 	}
 
 <#if(Model.UseBaseUrl){#>
-    public string BaseUrl 
+    public <#if(!Model.InjectServiceFabric){#>string<#}else{#>System.Uri<#}#> BaseUrl 
     {
         get { return _baseUrl; }
         set { _baseUrl = value; }
@@ -471,8 +477,8 @@ urlBuilder_.Append("<#=parameter.Name#>=").Append(System.Uri.EscapeDataString(Sy
                 }
             }
 <#      }else/*InjectServiceFabric*/{#>
-        var serviceClient = new Renweb.Core.ApiGateway.Communication.ServiceClient(new System.Uri(BaseUrl));
-        return await serviceClient.<#=operation.HttpMethod.ToString().ToUpperInvariant()#>Async(urlBuilder_.ToString()<#if(operation.HasFormParameters){#>, <#}#><#foreach(var parameter in operation.FormParameters){#><#=parameter.VariableName#><#}#>);
+        _serviceClient = _serviceClient ?? new Renweb.Core.ApiGateway.Communication.ServiceClient(_baseUrl);
+        return await _serviceClient.<#=operation.HttpMethod.ToString().ToUpperInvariant()#>Async(urlBuilder_.ToString()<#if(operation.HasFormParameters){#>, <#}#><#foreach(var parameter in operation.FormParameters){#><#=parameter.VariableName#><#}#>);
 <#      }#>
 <#if(!Model.InjectServiceFabric){#>
         }
