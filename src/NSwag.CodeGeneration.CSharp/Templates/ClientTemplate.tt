@@ -67,6 +67,7 @@ public partial interface I<#=Model.Class#>
 <#}#>
 }
 <#}#>
+
 <#if(Model.InjectServiceFabric){#>
 [Renweb.Core.IoC.Domain.Attribute.IoCRegisterAttribute(Lifetime = Renweb.Core.IoC.Domain.Enum.LifetimeScopeEnum.Scope, Interface = typeof(I<#=Model.Class#>))]
 <#}#>
