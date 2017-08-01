@@ -9,6 +9,9 @@ src/packages/**
 **.sln.ide/**
 **.vs/**
 
+*.nupkg
+UpgradeLog*.htm
+
 [Bb]in/
 [Oo]bj/
 *.nugetreferenceswitcher
