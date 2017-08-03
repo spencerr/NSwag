@@ -493,7 +493,7 @@ urlBuilder_.Append("<#=parameter.Name#>=").Append(System.Uri.EscapeDataString(Sy
 <#      }else/*InjectServiceFabric*/{
 string a = operation.HttpMethod.ToString().ToLower(); string lowera = a.Remove(0,1); char uppera = char.ToUpper(a[0]); string titleCaseA = $"{uppera}{lowera}";
 #>
-        return await ServiceClient.<#=titleCaseA#>Async(urlBuilder_.ToString()<#if(operation.HasFormParameters){#>, <#}#><#foreach(var parameter in operation.FormParameters){#><#=parameter.VariableName#><#}#>);
+        return await ServiceClient.<#=titleCaseA#>Async(urlBuilder_.ToString()<#if(operation.HasContent){#>, <#=operation.ContentParameter.VariableName#><#}#>);
 <#      }#>
 <#if(!Model.InjectServiceFabric){#>
         }
@@ -579,7 +579,7 @@ urlBuilder_.Append("<#=parameter.Name#>=").Append(System.Uri.EscapeDataString(Sy
 string fnf = operation.HttpMethod.ToString().ToLower(); string lowerfnf = fnf.Remove(0,1); char upperfnf = char.ToUpper(fnf[0]); string titleCase = $"{upperfnf}{lowerfnf}";
 #>
 
-        await ServiceClient.FireAndForget<#=titleCase#>Async(urlBuilder_.ToString()<#if(operation.HasFormParameters){#>, <#}#><#foreach(var parameter in operation.FormParameters){#><#=parameter.VariableName#><#}#>);
+        await ServiceClient.FireAndForget<#=titleCase#>Async(urlBuilder_.ToString()<#if(operation.HasContent){#>, <#=operation.ContentParameter.VariableName#><#}#>);
 	}
 <#}#>
 <#}#>

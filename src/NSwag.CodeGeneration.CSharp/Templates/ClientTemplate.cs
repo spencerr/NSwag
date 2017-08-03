@@ -3542,26 +3542,14 @@ string a = operation.HttpMethod.ToString().ToLower(); string lowera = a.Remove(0
             this.Write("Async(urlBuilder_.ToString()");
             
             #line 496 "C:\Repos\NSwag\src\NSwag.CodeGeneration.CSharp\Templates\ClientTemplate.tt"
-if(operation.HasFormParameters){
+if(operation.HasContent){
             
             #line default
             #line hidden
             this.Write(", ");
             
             #line 496 "C:\Repos\NSwag\src\NSwag.CodeGeneration.CSharp\Templates\ClientTemplate.tt"
-}
-            
-            #line default
-            #line hidden
-            
-            #line 496 "C:\Repos\NSwag\src\NSwag.CodeGeneration.CSharp\Templates\ClientTemplate.tt"
-foreach(var parameter in operation.FormParameters){
-            
-            #line default
-            #line hidden
-            
-            #line 496 "C:\Repos\NSwag\src\NSwag.CodeGeneration.CSharp\Templates\ClientTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(parameter.VariableName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(operation.ContentParameter.VariableName));
             
             #line default
             #line hidden
@@ -4264,26 +4252,14 @@ string fnf = operation.HttpMethod.ToString().ToLower(); string lowerfnf = fnf.Re
             this.Write("Async(urlBuilder_.ToString()");
             
             #line 582 "C:\Repos\NSwag\src\NSwag.CodeGeneration.CSharp\Templates\ClientTemplate.tt"
-if(operation.HasFormParameters){
+if(operation.HasContent){
             
             #line default
             #line hidden
             this.Write(", ");
             
             #line 582 "C:\Repos\NSwag\src\NSwag.CodeGeneration.CSharp\Templates\ClientTemplate.tt"
-}
-            
-            #line default
-            #line hidden
-            
-            #line 582 "C:\Repos\NSwag\src\NSwag.CodeGeneration.CSharp\Templates\ClientTemplate.tt"
-foreach(var parameter in operation.FormParameters){
-            
-            #line default
-            #line hidden
-            
-            #line 582 "C:\Repos\NSwag\src\NSwag.CodeGeneration.CSharp\Templates\ClientTemplate.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(parameter.VariableName));
+            this.Write(this.ToStringHelper.ToStringWithCulture(operation.ContentParameter.VariableName));
             
             #line default
             #line hidden
