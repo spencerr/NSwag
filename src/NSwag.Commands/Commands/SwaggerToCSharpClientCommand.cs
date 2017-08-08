@@ -187,6 +187,13 @@ namespace NSwag.Commands
             set { Settings.InjectServiceFabric = value; }
         }
 
+        [Argument(Name = "UseStringInterpolation", IsRequired = false, Description = "Specifies whether to use string interpolation.")]
+        public bool UseStringInterpolation
+        {
+            get { return Settings.UseStringInterpolation; }
+            set { Settings.UseStringInterpolation = value; }
+        }
+
         public override async Task<object> RunAsync(CommandLineProcessor processor, IConsoleHost host)
         {
             var result = await RunAsync();

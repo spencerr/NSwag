@@ -224,6 +224,7 @@ public partial interface I<#=Model.Class#>
 
 <#  }#>
 <#}#>
+<#if(!Model.UseStringInterpolation){#>
         var urlBuilder_ = new System.Text.StringBuilder();
         urlBuilder_.Append(<#if(Model.UseBaseUrl && !Model.InjectServiceFabric){#>BaseUrl).Append("/<#}else{#>"<#}#><#=operation.Path#><#if(operation.HasQueryParameters){#>?<#}#>");
 <#foreach(var parameter in operation.PathParameters){#>
@@ -258,6 +259,9 @@ urlBuilder_.Append("<#=parameter.Name#>=").Append(System.Uri.EscapeDataString(Sy
 <#}#>
 <#if(operation.HasQueryParameters){#>
         urlBuilder_.Length--;
+<#}#>
+<#}else{#>
+        var url_ = $"<#if(Model.UseBaseUrl){#>{BaseUrl}<#}#><#if(operation.HasQueryParameters){#>?<#for(var i = 0; i < operation.QueryParameters.Count(); i++){var parameter = operation.QueryParameters.ToList()[i];#><#=parameter.VariableName#>={<#=parameter.VariableName#>}<#if(i+1 < operation.QueryParameters.Count()){#>&<#}#><#}#><#}#>";
 <#}#>
 
 <#      if(Model.InjectHttpClient){#>
@@ -323,7 +327,9 @@ urlBuilder_.Append("<#=parameter.Name#>=").Append(System.Uri.EscapeDataString(Sy
 <#  }#>
 
                 PrepareRequest(client_, request_, urlBuilder_);
+				<#if(Model.UseStringInterpolation){#>
                 var url_ = urlBuilder_.ToString();
+				<#}#>
                 request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
                 PrepareRequest(client_, request_, url_);
 
@@ -493,7 +499,7 @@ urlBuilder_.Append("<#=parameter.Name#>=").Append(System.Uri.EscapeDataString(Sy
 <#      }else/*InjectServiceFabric*/{
 string a = operation.HttpMethod.ToString().ToLower(); string lowera = a.Remove(0,1); char uppera = char.ToUpper(a[0]); string titleCaseA = $"{uppera}{lowera}";
 #>
-        return await ServiceClient.<#=titleCaseA#>Async(urlBuilder_.ToString()<#if(operation.HasContent){#>, <#=operation.ContentParameter.VariableName#><#}#>);
+        return await ServiceClient.<#=titleCaseA#>Async(url_<#if(operation.HasContent){#>, <#=operation.ContentParameter.VariableName#><#}#>);
 <#      }#>
 <#if(!Model.InjectServiceFabric){#>
         }
@@ -541,6 +547,7 @@ string a = operation.HttpMethod.ToString().ToLower(); string lowera = a.Remove(0
 
 <#  }#>
 <#}#>
+<#if(!Model.UseStringInterpolation){#>
         var urlBuilder_ = new System.Text.StringBuilder();
         urlBuilder_.Append(<#if(Model.UseBaseUrl && !Model.InjectServiceFabric){#>BaseUrl).Append("/<#}else{#>"<#}#><#=operation.Path#><#if(operation.HasQueryParameters){#>?<#}#>");
 <#foreach(var parameter in operation.PathParameters){#>
@@ -575,11 +582,15 @@ urlBuilder_.Append("<#=parameter.Name#>=").Append(System.Uri.EscapeDataString(Sy
 <#}#>
 <#if(operation.HasQueryParameters){#>
         urlBuilder_.Length--;
+<#}#>
+        var url_ = urlBuilder_.ToString();
+<#}else{#>
+        var url_ = $"<#if(Model.UseBaseUrl){#>{BaseUrl}<#}#><#if(operation.HasQueryParameters){#>?<#for(var i = 0; i < operation.QueryParameters.Count(); i++){var parameter = operation.QueryParameters.ToList()[i];#><#=parameter.VariableName#>={<#=parameter.VariableName#>}<#if(i+1 < operation.QueryParameters.Count()){#>&<#}#><#}#><#}#>";
 <#}
 string fnf = operation.HttpMethod.ToString().ToLower(); string lowerfnf = fnf.Remove(0,1); char upperfnf = char.ToUpper(fnf[0]); string titleCase = $"{upperfnf}{lowerfnf}";
 #>
-
-        await ServiceClient.FireAndForget<#=titleCase#>Async(urlBuilder_.ToString()<#if(operation.HasContent){#>, <#=operation.ContentParameter.VariableName#><#}#>);
+		
+		await ServiceClient.FireAndForget<#=titleCase#>Async(url_<#if(operation.HasContent){#>, <#=operation.ContentParameter.VariableName#><#}#>);
 	}
 <#}#>
 <#}#>
