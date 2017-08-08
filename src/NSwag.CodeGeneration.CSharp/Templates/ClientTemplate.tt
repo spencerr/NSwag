@@ -261,7 +261,7 @@ urlBuilder_.Append("<#=parameter.Name#>=").Append(System.Uri.EscapeDataString(Sy
         urlBuilder_.Length--;
 <#}#>
 <#}else{#>
-        var url_ = $"<#if(Model.UseBaseUrl){#>{BaseUrl}<#}#><#if(operation.HasQueryParameters){#>?<#for(var i = 0; i < operation.QueryParameters.Count(); i++){var parameter = operation.QueryParameters.ToList()[i];#><#=parameter.VariableName#>={<#=parameter.VariableName#>}<#if(i+1 < operation.QueryParameters.Count()){#>&<#}#><#}#><#}#>";
+        var url_ = $"<#if(Model.UseBaseUrl && !Model.InjectServiceFabric){#>{BaseUrl}<#}#><#=operation.Path#><#if(operation.HasQueryParameters){#>?<#for(var i = 0; i < operation.QueryParameters.Count(); i++){var parameter = operation.QueryParameters.ToList()[i];#><#=parameter.VariableName#>={<#=parameter.VariableName#>}<#if(i+1 < operation.QueryParameters.Count()){#>&<#}#><#}#><#}#>";
 <#}#>
 
 <#      if(Model.InjectHttpClient){#>
@@ -585,7 +585,7 @@ urlBuilder_.Append("<#=parameter.Name#>=").Append(System.Uri.EscapeDataString(Sy
 <#}#>
         var url_ = urlBuilder_.ToString();
 <#}else{#>
-        var url_ = $"<#if(Model.UseBaseUrl){#>{BaseUrl}<#}#><#if(operation.HasQueryParameters){#>?<#for(var i = 0; i < operation.QueryParameters.Count(); i++){var parameter = operation.QueryParameters.ToList()[i];#><#=parameter.VariableName#>={<#=parameter.VariableName#>}<#if(i+1 < operation.QueryParameters.Count()){#>&<#}#><#}#><#}#>";
+        var url_ = $"<#if(Model.UseBaseUrl && !Model.InjectServiceFabric){#>{BaseUrl}<#}#><#=operation.Path#><#if(operation.HasQueryParameters){#>?<#for(var i = 0; i < operation.QueryParameters.Count(); i++){var parameter = operation.QueryParameters.ToList()[i];#><#=parameter.VariableName#>={<#=parameter.VariableName#>}<#if(i+1 < operation.QueryParameters.Count()){#>&<#}#><#}#><#}#>";
 <#}
 string fnf = operation.HttpMethod.ToString().ToLower(); string lowerfnf = fnf.Remove(0,1); char upperfnf = char.ToUpper(fnf[0]); string titleCase = $"{upperfnf}{lowerfnf}";
 #>

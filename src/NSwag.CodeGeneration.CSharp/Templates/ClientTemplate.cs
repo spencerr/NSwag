@@ -2283,7 +2283,7 @@ if(operation.HasQueryParameters){
             this.Write("        var url_ = $\"");
             
             #line 264 "C:\Repos\NSwag\src\NSwag.CodeGeneration.CSharp\Templates\ClientTemplate.tt"
-if(Model.UseBaseUrl){
+if(Model.UseBaseUrl && !Model.InjectServiceFabric){
             
             #line default
             #line hidden
@@ -2291,6 +2291,12 @@ if(Model.UseBaseUrl){
             
             #line 264 "C:\Repos\NSwag\src\NSwag.CodeGeneration.CSharp\Templates\ClientTemplate.tt"
 }
+            
+            #line default
+            #line hidden
+            
+            #line 264 "C:\Repos\NSwag\src\NSwag.CodeGeneration.CSharp\Templates\ClientTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(operation.Path));
             
             #line default
             #line hidden
@@ -4352,7 +4358,7 @@ if(operation.HasQueryParameters){
             this.Write("        var url_ = $\"");
             
             #line 588 "C:\Repos\NSwag\src\NSwag.CodeGeneration.CSharp\Templates\ClientTemplate.tt"
-if(Model.UseBaseUrl){
+if(Model.UseBaseUrl && !Model.InjectServiceFabric){
             
             #line default
             #line hidden
@@ -4360,6 +4366,12 @@ if(Model.UseBaseUrl){
             
             #line 588 "C:\Repos\NSwag\src\NSwag.CodeGeneration.CSharp\Templates\ClientTemplate.tt"
 }
+            
+            #line default
+            #line hidden
+            
+            #line 588 "C:\Repos\NSwag\src\NSwag.CodeGeneration.CSharp\Templates\ClientTemplate.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(operation.Path));
             
             #line default
             #line hidden
