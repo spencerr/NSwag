@@ -18,7 +18,11 @@
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Templates\ClientTemplate.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="Templates\Client.Class.BeforeSend.liquid" />
+    <None Remove="Templates\ClientTemplate.tt" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Templates\Client.Class.BeforeSend.liquid" />
