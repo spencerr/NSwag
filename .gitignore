@@ -8,6 +8,7 @@ src/packages/**
 
 **.sln.ide/**
 **.vs/**
+.vs/**
 
 *.nupkg
 UpgradeLog*.htm
@@ -59,3 +60,5 @@ UpgradeLog*.htm
 /src/NSwag.Integration.TypeScriptWeb/scripts/serviceClientsAngular2.extensions.js.map
 /src/NSwag.Integration.TypeScriptWeb/scripts/serviceClientsAngular2.extensions.js
 /src/dist
+build/*.nupkg
+/src/NSwagStudio.Installer/Generated.wxs
