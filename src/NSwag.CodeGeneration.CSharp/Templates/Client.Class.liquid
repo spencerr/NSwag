@@ -1,7 +1,10 @@
+{% if InjectServiceFabric == false -%}
+[Renweb.Core.IoC.Domain.Attribute.IoCRegisterAttribute(Lifetime = Renweb.Core.IoC.Domain.Enum.LifetimeScopeEnum.Scope, Interface = typeof(I{{ Class }}))]
+{% endif -%}
 [System.CodeDom.Compiler.GeneratedCode("NSwag", "{{ ToolchainVersion }}")]
 {{ ClientClassAccessModifier }} partial class {{ Class }} {% if HasBaseType %}: {% endif %}{% if HasBaseClass %}{{ BaseClass }}{% if GenerateClientInterfaces %}, {% endif %}{% endif %}{% if GenerateClientInterfaces %}I{{ Class }}{% endif %}
 {
-{% if UseBaseUrl and GenerateBaseUrlProperty -%}
+{% if UseBaseUrl and GenerateBaseUrlProperty and InjectServiceFabric == false -%}
     private string _baseUrl = "{{ BaseUrl }}";
 {% endif -%}
 {% if InjectHttpClient -%}
@@ -9,6 +12,23 @@
 {% endif -%}
     private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
+{% if InjectServiceFabric -%}
+    private System.Uri _baseUrl;
+
+	private Renweb.Core.ApiGateway.Communication.ServiceClient _serviceClient;
+
+    public Renweb.Core.ApiGateway.Communication.ServiceClient ServiceClient 
+	{
+		get
+		{
+			if(_serviceClient == null)
+				_serviceClient = new Renweb.Core.ApiGateway.Communication.ServiceClient(_baseUrl);
+
+			return _serviceClient;
+		}
+	}
+	
+{% endif -%}
 {% if HasConfigurationClass -%}
     public {{ Class }}({{ ConfigurationClass }} configuration{% if InjectHttpClient %}, {{ HttpClientType }} httpClient{% endif %}) : base(configuration)
     {
@@ -16,9 +36,9 @@
         _httpClient = httpClient; 
 {%     endif -%}
 {% elseif UseBaseUrl and HasBaseUrl == false -%}
-    public {{ Class }}(string baseUrl{% if InjectHttpClient -%}, {{ HttpClientType }} httpClient{% endif %})
+    public {{ Class }}({% InjectServiceFabric -%}System.Uri{% else -%}string{% endif -%} baseUrl{% if InjectHttpClient -%}, {{ HttpClientType }} httpClient{% endif %})
     {
-        BaseUrl = baseUrl; 
+        _baseUrl = baseUrl; 
 {%     if InjectHttpClient -%}
         _httpClient = httpClient; 
 {%     endif -%}
@@ -42,7 +62,7 @@
 	}
 
 {% if UseBaseUrl and GenerateBaseUrlProperty -%}
-    public string BaseUrl 
+    public {% InjectServiceFabric -%}System.Uri{% else -%}string{% endif -%} BaseUrl 
     {
         get { return _baseUrl; }
         set { _baseUrl = value; }
@@ -59,7 +79,7 @@
 {% for operation in Operations -%}
 {%     if GenerateOptionalParameters == false -%}
     {% template Client.Method.Documentation %}
-    {{ operation.MethodAccessModifier }} {{ operation.ResultType }} {{ operation.ActualOperationName }}Async({% for parameter in operation.Parameters %}{{ parameter.Type }} {{ parameter.VariableName }}{% if GenerateOptionalParameters and parameter.IsOptional %} = null{% endif %}{% if parameter.IsLast == false %}, {% endif %}{% endfor %})
+    {{ operation.MethodAccessModifier }} {% if InjectServiceFabric == false -%}{{ operation.ResultType }} {% else -%}System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage> {% endif -%} {{ operation.ActualOperationName }}Async({% for parameter in operation.Parameters %}{{ parameter.Type }} {{ parameter.VariableName }}{% if GenerateOptionalParameters and parameter.IsOptional %} = null{% endif %}{% if parameter.IsLast == false %}, {% endif %}{% endfor %})
     {
         return {{ operation.ActualOperationName }}Async({% for parameter in operation.Parameters %}{{ parameter.VariableName }}, {% endfor %}System.Threading.CancellationToken.None);
     }
@@ -67,7 +87,7 @@
 {%     endif -%}
 {%     if GenerateSyncMethods -%}
     {% template Client.Method.Documentation %}
-    {{ operation.MethodAccessModifier }} {{ operation.SyncResultType }} {{ operation.ActualOperationName }}({% for parameter in operation.Parameters %}{{ parameter.Type }} {{ parameter.VariableName }}{% if GenerateOptionalParameters and parameter.IsOptional %} = null{% endif %}{% if parameter.IsLast == false %}, {% endif %}{% endfor %})
+    {{ operation.MethodAccessModifier }} {% if InjectServiceFabric == false -%}{{ operation.SyncResultType }} {% else -%}System.Net.Http.HttpResponseMessage {% endif -%} {{ operation.ActualOperationName }}({% for parameter in operation.Parameters %}{{ parameter.Type }} {{ parameter.VariableName }}{% if GenerateOptionalParameters and parameter.IsOptional %} = null{% endif %}{% if parameter.IsLast == false %}, {% endif %}{% endfor %})
     {
         {% if operation.HasResult %}return {% endif %}System.Threading.Tasks.Task.Run(async () => await {{ operation.ActualOperationName }}Async({% for parameter in operation.Parameters %}{{ parameter.VariableName }}, {% endfor %}System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
     }
@@ -75,7 +95,7 @@
 {%     endif -%}
     {% template Client.Method.Documentation %}
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-    {{ operation.MethodAccessModifier }} async {{ operation.ResultType }} {{ operation.ActualOperationName }}Async({% for parameter in operation.Parameters %}{{ parameter.Type }} {{ parameter.VariableName }}{% if GenerateOptionalParameters and parameter.IsOptional %} = null{% endif %}, {% endfor %}System.Threading.CancellationToken cancellationToken{% if GenerateOptionalParameters %} = default(System.Threading.CancellationToken){% endif %})
+    {{ operation.MethodAccessModifier }} async {% if InjectServiceFabric == false -%}{{ operation.ResultType }} {% else -%}System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage> {% endif -%} {{ operation.ActualOperationName }}Async({% for parameter in operation.Parameters %}{{ parameter.Type }} {{ parameter.VariableName }}{% if GenerateOptionalParameters and parameter.IsOptional %} = null{% endif %}, {% endfor %}System.Threading.CancellationToken cancellationToken{% if GenerateOptionalParameters %} = default(System.Threading.CancellationToken){% endif %})
     {
 {%     for parameter in operation.PathParameters -%}
 {%         if parameter.IsNullable == false and parameter.IsRequired -%}
@@ -91,6 +111,9 @@
 
 {%         endif -%}
 {%     endfor -%}
+{% if UseStringInterpolation -%}
+        var url_ = $"{% if UseBaseUrl and InjectServiceFabric == false -%}BaseUrl<% endif -%}{{ operation.Path }}{% if operation.HasQueryParameters %}?{% for parameter in operation.PathParameters -%}{{ parameter.VariableName }}={{ parameter.VariableName }}(% if i+1 < operation.QueryParameters.Count() -%}&{# endif -%}{% endfor -%}{% endif %}";
+{% else -%}
         var urlBuilder_ = new System.Text.StringBuilder();
         urlBuilder_.Append({% if UseBaseUrl %}BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/{% else %}"{% endif %}{{ operation.Path }}{% if operation.HasQueryParameters %}?{% endif %}");
 {%     for parameter in operation.PathParameters -%}
@@ -127,14 +150,20 @@ urlBuilder_.Append("{{ parameter.Name }}=").Append(System.Uri.EscapeDataString({
 {%     if operation.HasQueryParameters -%}
         urlBuilder_.Length--;
 {%     endif -%}
+{% endif -%}
 
 {%     if InjectHttpClient -%}
         var client_ = _httpClient;
 {%     elseif UseHttpClientCreationMethod -%}
         var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
-{%     else -%}
+{%     elseif InjectServiceFabric == false -%}
         var client_ = new {{ HttpClientType }}();
 {%     endif -%}
+{%     if InjectServiceFabric 
+          string a = operation.HttpMethod.ToString().ToLower(); string lowera = a.Remove(0,1); char uppera = char.ToUpper(a[0]); string titleCaseA = $"{uppera}{lowera}";
+-%}
+            return await ServiceClient.{{ titleCaseA }}Async(url_{% if operation.HasContent-%}, {{ operation.ContentParameter.VariableName }{% endif -%});
+{%     else -%}
         try
         {
 {%     if UseHttpRequestMessageCreationMethod -%}
@@ -262,7 +291,72 @@ urlBuilder_.Append("{{ parameter.Name }}=").Append(System.Uri.EscapeDataString({
                 client_.Dispose();
 {%     endif -%}
         }
+{% endif -%}
     }
+
+    {% template Client.Method.Documentation %}
+    /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+    {{ operation.MethodAccessModifier }} async {% if InjectServiceFabric == false -%}{{ operation.ResultType }} {% else -%}System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage> {% endif -%} {{ operation.ActualOperationName }}Async({% for parameter in operation.Parameters %}{{ parameter.Type }} {{ parameter.VariableName }}{% if GenerateOptionalParameters and parameter.IsOptional %} = null{% endif %}, {% endfor %}System.Threading.CancellationToken cancellationToken{% if GenerateOptionalParameters %} = default(System.Threading.CancellationToken){% endif %})
+    {
+{%     for parameter in operation.PathParameters -%}
+{%         if parameter.IsNullable == false and parameter.IsRequired -%}
+        if ({{ parameter.VariableName }} == null)
+            throw new System.ArgumentNullException("{{ parameter.VariableName }}");
+
+{%         endif -%}
+{%     endfor -%}
+{%     for parameter in operation.QueryParameters -%}
+{%         if parameter.IsNullable == false and parameter.IsRequired -%}
+        if ({{ parameter.VariableName }} == null)
+            throw new System.ArgumentNullException("{{ parameter.VariableName }}");
+
+{%         endif -%}
+{%     endfor -%}
+{% if UseStringInterpolation -%}
+        var url_ = $"{% if UseBaseUrl and InjectServiceFabric == false -%}BaseUrl<% endif -%}{{ operation.Path }}{% if operation.HasQueryParameters %}?{% for parameter in operation.PathParameters -%}{{ parameter.VariableName }}={{ parameter.VariableName }}(% if i+1 < operation.QueryParameters.Count() -%}&{# endif -%}{% endfor -%}{% endif %}";
+{% else -%}
+        var urlBuilder_ = new System.Text.StringBuilder();
+        urlBuilder_.Append({% if UseBaseUrl %}BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/{% else %}"{% endif %}{{ operation.Path }}{% if operation.HasQueryParameters %}?{% endif %}");
+{%     for parameter in operation.PathParameters -%}
+{%         if parameter.IsOptional -%}
+        if ({{ parameter.VariableName }} != null)
+{%         endif -%}
+{%         if parameter.IsDateArray -%}
+        urlBuilder_.Replace("{{ "{" }}{{ parameter.Name }}}", System.Uri.EscapeDataString(string.Join(",", System.Linq.Enumerable.Select({{ parameter.VariableName }}, s_ => s_.ToString("{{ ParameterDateTimeFormat }}", System.Globalization.CultureInfo.InvariantCulture)))));
+{%         elseif parameter.IsDate -%}
+        urlBuilder_.Replace("{{ "{" }}{{ parameter.Name }}}", System.Uri.EscapeDataString({{ parameter.VariableName }}.ToString("{{ ParameterDateTimeFormat }}", System.Globalization.CultureInfo.InvariantCulture)));
+{%         elseif parameter.IsArray -%}
+        urlBuilder_.Replace("{{ "{" }}{{ parameter.Name }}}", System.Uri.EscapeDataString(string.Join(",", System.Linq.Enumerable.Select({{ parameter.VariableName }}, s_ => ConvertToString(s_, System.Globalization.CultureInfo.InvariantCulture)))));
+{%         else -%}
+        urlBuilder_.Replace("{{ "{" }}{{ parameter.Name }}}", System.Uri.EscapeDataString(ConvertToString({{ parameter.VariableName }}, System.Globalization.CultureInfo.InvariantCulture)));
+{%         endif -%}
+{%         if parameter.IsOptional -%}
+        else
+            urlBuilder_.Replace("/{{ "{" }}{{ parameter.Name }}}", string.Empty);
+{%         endif -%}
+{%     endfor -%}
+{%     for parameter in operation.QueryParameters -%}
+        {% if parameter.IsOptional -%}
+if ({{ parameter.VariableName }} != null) {% endif -%}
+{%         if parameter.IsDateArray -%}
+foreach (var item_ in {{ parameter.VariableName }}) { urlBuilder_.Append("{{ parameter.Name }}=").Append(System.Uri.EscapeDataString(item_.ToString("{{ ParameterDateTimeFormat }}", System.Globalization.CultureInfo.InvariantCulture))).Append("&"); }
+{%         elseif parameter.IsDate -%}
+urlBuilder_.Append("{{ parameter.Name }}=").Append(System.Uri.EscapeDataString({% if parameter.IsNullable and parameter.IsRequired %}{{ parameter.VariableName }} != null ? {% endif %}{{ parameter.VariableName }}{% if parameter.IsSystemNullable %}.Value{% endif %}.ToString("{{ ParameterDateTimeFormat }}", System.Globalization.CultureInfo.InvariantCulture){% if parameter.IsNullable and parameter.IsRequired %} : "{{ QueryNullValue }}"{% endif %})).Append("&");
+{%         elseif parameter.IsArray -%}
+foreach (var item_ in {{ parameter.VariableName }}) { urlBuilder_.Append("{{ parameter.Name }}=").Append(System.Uri.EscapeDataString(ConvertToString(item_, System.Globalization.CultureInfo.InvariantCulture))).Append("&"); }
+{%         else -%}
+urlBuilder_.Append("{{ parameter.Name }}=").Append(System.Uri.EscapeDataString({% if parameter.IsNullable and parameter.IsRequired %}{{ parameter.VariableName }} != null ? {% endif %}ConvertToString({{ parameter.VariableName }}, System.Globalization.CultureInfo.InvariantCulture){% if parameter.IsNullable and parameter.IsRequired %} : "{{ QueryNullValue }}"{% endif %})).Append("&");
+{%         endif -%}
+{%     endfor -%}
+{%     if operation.HasQueryParameters -%}
+        urlBuilder_.Length--;
+{%     endif -%}
+        url_ = urlBuilder_.ToString();
+{% endif 
+string fnf = operation.HttpMethod.ToString().ToLower(); string lowerfnf = fnf.Remove(0,1); char upperfnf = char.ToUpper(fnf[0]); string titleCase = $"{upperfnf}{lowerfnf}";
+-%}
+		await ServiceClient.FireAndForget{{titleCase}}Async(url_{% if operation.HasContent-%}, {{ operation.ContentParameter.VariableName }{% endif -%});
+	}
 
 {% endfor -%}
 	private string ConvertToString(object value, System.Globalization.CultureInfo cultureInfo)

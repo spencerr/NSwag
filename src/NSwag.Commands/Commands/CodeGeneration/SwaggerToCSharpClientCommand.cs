@@ -204,14 +204,14 @@ namespace NSwag.Commands.CodeGeneration
             set { Settings.QueryNullValue = value; }
         }
 
-        [Argument(Name = "InjectServiceFabric", IsRequired = false, Description = "Specifies whether an ServiceFabricClient instance is injected.")]
+        [Argument(Name = nameof(InjectServiceFabric), IsRequired = false, Description = "Specifies whether an ServiceFabricClient instance is injected.")]
         public bool InjectServiceFabric
         {
             get { return Settings.InjectServiceFabric; }
             set { Settings.InjectServiceFabric = value; }
         }
 
-        [Argument(Name = "UseStringInterpolation", IsRequired = false, Description = "Specifies whether to use string interpolation.")]
+        [Argument(Name = nameof(UseStringInterpolation), IsRequired = false, Description = "Specifies whether to use string interpolation.")]
         public bool UseStringInterpolation
         {
             get { return Settings.UseStringInterpolation; }

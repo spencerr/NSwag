@@ -62,6 +62,7 @@ namespace NSwag.CodeGeneration.CSharp
 
         /// <summary>Gets or sets the array type of operation parameters.</summary>
         public string ParameterArrayType { get; set; }
+
         /// <summary>Gets or sets a value indicating whether to generate service fabric client injection.</summary>
         public bool InjectServiceFabric { get; set; }
 
