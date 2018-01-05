@@ -9,7 +9,9 @@
 {% if operation.HasResultDescription -%}
 /// <returns>{{ operation.ResultDescription | csharpdocs }}</returns>
 {% endif -%}
+{% if InjectServiceFabric == false -%}
 /// <exception cref="{{ ExceptionClass }}">A server side error occurred.</exception>
+{% endif -%}
 {% for exception in operation.ExceptionDescriptions -%}
 /// <exception cref="{{ exception.Type }}">{{ exception.Description }}</exception>
 {% endfor -%}
