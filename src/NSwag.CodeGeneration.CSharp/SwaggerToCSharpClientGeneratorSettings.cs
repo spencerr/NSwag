@@ -27,6 +27,8 @@ namespace NSwag.CodeGeneration.CSharp
             GenerateUpdateJsonSerializerSettingsMethod = true;
             QueryNullValue = "";
             GenerateBaseUrlProperty = true;
+            InjectServiceFabric = false;
+            UseStringInterpolation = false;
         }
 
         /// <summary>Gets or sets the full name of the base class.</summary>
@@ -88,5 +90,11 @@ namespace NSwag.CodeGeneration.CSharp
 
         /// <summary>Gets or sets the null value used for query parameters which are null (default: '').</summary>
         public string QueryNullValue { get; set; }
+
+        /// <summary>Gets or sets a value indicating whether to generate service fabric client injection.</summary>
+        public bool InjectServiceFabric { get; set; }
+
+        /// <summary>Gets or sets a value indicating whether to use string interpolation.</summary>
+        public bool UseStringInterpolation { get; set; }
     }
 }

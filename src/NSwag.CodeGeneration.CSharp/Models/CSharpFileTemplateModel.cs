@@ -106,12 +106,6 @@ namespace NSwag.CodeGeneration.CSharp.Models
         /// <summary>Gets or sets a value indicating whether to generate the response class (only applied when WrapResponses == true, default: true).</summary>
         public bool GenerateResponseClasses => _settings.GenerateResponseClasses;
 
-        /// <summary>Gets or sets a value indicating whether to generate service fabric client injection.</summary>
-        public bool InjectServiceFabric => _settings.InjectServiceFabric;
-
-        /// <summary>Gets or sets a value indicating whether to use string interpolation</summary>
-        public bool UseStringInterpolation => _settings.UseStringInterpolation;
-
         /// <summary>Gets the response class names.</summary>
         public IEnumerable<string> ResponseClassNames
         {

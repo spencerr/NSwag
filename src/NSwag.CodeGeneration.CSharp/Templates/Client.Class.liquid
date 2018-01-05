@@ -1,4 +1,4 @@
-{% if InjectServiceFabric == false -%}
+{% if InjectServiceFabric -%}
 [Renweb.Core.IoC.Domain.Attribute.IoCRegisterAttribute(Lifetime = Renweb.Core.IoC.Domain.Enum.LifetimeScopeEnum.Scope, Interface = typeof(I{{ Class }}))]
 {% endif -%}
 [System.CodeDom.Compiler.GeneratedCode("NSwag", "{{ ToolchainVersion }}")]
@@ -112,7 +112,7 @@
 {%         endif -%}
 {%     endfor -%}
 {% if UseStringInterpolation -%}
-        var url_ = $"{% if UseBaseUrl and InjectServiceFabric == false -%}BaseUrl<% endif -%}{{ operation.Path }}{% if operation.HasQueryParameters %}?{% for parameter in operation.PathParameters -%}{{ parameter.VariableName }}={{ parameter.VariableName }}(% if i+1 < operation.QueryParameters.Count() -%}&{# endif -%}{% endfor -%}{% endif %}";
+        var url_ = $"{% if UseBaseUrl and InjectServiceFabric == false -%}BaseUrl{% endif -%}{{ operation.Path }}{% if operation.HasQueryParameters -%}?{% for parameter in operation.PathParameters -%}{{ parameter.VariableName }}={{ parameter.VariableName }}(% if i+1 < operation.QueryParameters.Count() -%}&{# endif -%}{% endfor -%}{% endif %}";
 {% else -%}
         var urlBuilder_ = new System.Text.StringBuilder();
         urlBuilder_.Append({% if UseBaseUrl %}BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/{% else %}"{% endif %}{{ operation.Path }}{% if operation.HasQueryParameters %}?{% endif %}");
@@ -313,7 +313,7 @@ urlBuilder_.Append("{{ parameter.Name }}=").Append(System.Uri.EscapeDataString({
 {%         endif -%}
 {%     endfor -%}
 {% if UseStringInterpolation -%}
-        var url_ = $"{% if UseBaseUrl and InjectServiceFabric == false -%}BaseUrl<% endif -%}{{ operation.Path }}{% if operation.HasQueryParameters %}?{% for parameter in operation.PathParameters -%}{{ parameter.VariableName }}={{ parameter.VariableName }}(% if i+1 < operation.QueryParameters.Count() -%}&{# endif -%}{% endfor -%}{% endif %}";
+        var url_ = $"{% if UseBaseUrl and InjectServiceFabric == false -%}BaseUrl{% endif -%}{{ operation.Path }}{% if operation.HasQueryParameters %}?{% for parameter in operation.PathParameters -%}{{ parameter.VariableName }}={{ parameter.VariableName }}(% if i+1 < operation.QueryParameters.Count() -%}&{# endif -%}{% endfor -%}{% endif %}";
 {% else -%}
         var urlBuilder_ = new System.Text.StringBuilder();
         urlBuilder_.Append({% if UseBaseUrl %}BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/{% else %}"{% endif %}{{ operation.Path }}{% if operation.HasQueryParameters %}?{% endif %}");
