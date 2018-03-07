@@ -62,3 +62,5 @@ UpgradeLog*.htm
 /src/dist
 build/*.nupkg
 /src/NSwagStudio.Installer/Generated.wxs
+NSwag.MSBuild.*.nupkg
+NSwagStudio*.nupkg

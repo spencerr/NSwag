@@ -29,6 +29,7 @@ namespace NSwag.CodeGeneration.CSharp
             GenerateBaseUrlProperty = true;
             InjectServiceFabric = false;
             UseStringInterpolation = false;
+            ExposeJsonSerializerSettings = false;
         }
 
         /// <summary>Gets or sets the full name of the base class.</summary>
@@ -96,5 +97,8 @@ namespace NSwag.CodeGeneration.CSharp
 
         /// <summary>Gets or sets a value indicating whether to use string interpolation.</summary>
         public bool UseStringInterpolation { get; set; }
+
+        /// <summary>Gets or sets a value indicating whether to expose the JsonSerializerSettings property (default: false).</summary>
+        public bool ExposeJsonSerializerSettings { get; set; }
     }
 }
