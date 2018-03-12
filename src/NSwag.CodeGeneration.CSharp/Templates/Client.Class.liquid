@@ -12,14 +12,18 @@
 {% endif -%}
     private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 {% if InjectServiceFabric %}
-	private Renweb.Core.ApiGateway.Communication.ServiceClient _serviceClient;
+	protected Renweb.Core.ApiGateway.Communication.ICustomServicePartitionClientFactory ClientFactory { get; }
 
-    public Renweb.Core.ApiGateway.Communication.ServiceClient ServiceClient 
+	protected long? _paritionKey = null;
+	protected bool _forceServicePartitionResolver = false;
+	protected Renweb.Core.ApiGateway.Communication.CustomServicePartitionClient _serviceClient;
+
+    public Renweb.Core.ApiGateway.Communication.CustomServicePartitionClient ServiceClient 
 	{
 		get
 		{
 			if(_serviceClient == null)
-				_serviceClient = new Renweb.Core.ApiGateway.Communication.ServiceClient(_baseUrl);
+				_serviceClient = ClientFactory.GetCustomServicePartitionClient(_baseUrl, _paritionKey, _forceServicePartitionResolver);
 
 			return _serviceClient;
 		}
@@ -33,11 +37,14 @@
         _httpClient = httpClient; 
 {%     endif -%}
 {% elseif UseBaseUrl and HasBaseUrl == false -%}
-    public {{ Class }}({% if InjectServiceFabric %}System.Uri{% else %}string{% endif %} baseUrl{% if InjectHttpClient -%}, {{ HttpClientType }} httpClient{% endif %})
+    public {{ Class }}({% if InjectServiceFabric %}System.Uri{% else %}string{% endif %} baseUrl{% if InjectServiceFabric -%}, Renweb.Core.ApiGateway.Communication.ICustomServicePartitionClientFactory clientFactory{% endif %}{% if InjectHttpClient -%}, {{ HttpClientType }} httpClient{% endif %})
     {
         _baseUrl = baseUrl; 
 {%     if InjectHttpClient -%}
-        _httpClient = httpClient; 
+        _httpClient = httpClient ?? throw new System.ArgumentNullException(nameof(httpClient)); 
+{%     endif -%}
+{%     if InjectServiceFabric -%}
+		ClientFactory = clientFactory ?? throw new System.ArgumentNullException(nameof(clientFactory));
 {%     endif -%}
 {% elseif InjectHttpClient -%}
     public {{ Class }}({{ HttpClientType }} httpClient)
@@ -78,23 +85,23 @@
 {% for operation in Operations -%}
 {%     if GenerateOptionalParameters == false -%}
     {% template Client.Method.Documentation %}
-    {{ operation.MethodAccessModifier }} {% if InjectServiceFabric == false %}{{ operation.ResultType }} {% else %}System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage> {% endif %} {{ operation.ActualOperationName }}Async({% for parameter in operation.Parameters %}{{ parameter.Type }} {{ parameter.VariableName }}{% if GenerateOptionalParameters and parameter.IsOptional %} = null{% endif %}{% if parameter.IsLast == false %}, {% endif %}{% endfor %})
+    {{ operation.MethodAccessModifier }} {% if InjectServiceFabric == false %}{{ operation.ResultType }} {% else %}System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage> {% endif %} {{ operation.ActualOperationName }}Async({% for parameter in operation.Parameters %}{{ parameter.Type }} {{ parameter.VariableName }}{% if GenerateOptionalParameters and parameter.IsOptional %} = null{% endif %}{% if parameter.IsLast == false %}, {% endif %}{% endfor %}{% if InjectServiceFabric %}, bool enableLocalDev = true{% endif %})
     {
-        return {{ operation.ActualOperationName }}Async({% for parameter in operation.Parameters %}{{ parameter.VariableName }}, {% endfor %}System.Threading.CancellationToken.None);
+        return {{ operation.ActualOperationName }}Async({% for parameter in operation.Parameters %}{{ parameter.VariableName }}, {% endfor %}System.Threading.CancellationToken.None, enableLocalDev);
     }
 
 {%     endif -%}
 {%     if GenerateSyncMethods -%}
     {% template Client.Method.Documentation %}
-    {{ operation.MethodAccessModifier }} {% if InjectServiceFabric == false %}{{ operation.SyncResultType }} {% else %}System.Net.Http.HttpResponseMessage {% endif %} {{ operation.ActualOperationName }}({% for parameter in operation.Parameters %}{{ parameter.Type }} {{ parameter.VariableName }}{% if GenerateOptionalParameters and parameter.IsOptional %} = null{% endif %}{% if parameter.IsLast == false %}, {% endif %}{% endfor %})
+    {{ operation.MethodAccessModifier }} {% if InjectServiceFabric == false %}{{ operation.SyncResultType }} {% else %}System.Net.Http.HttpResponseMessage {% endif %} {{ operation.ActualOperationName }}({% for parameter in operation.Parameters %}{{ parameter.Type }} {{ parameter.VariableName }}{% if GenerateOptionalParameters and parameter.IsOptional %} = null{% endif %}{% if parameter.IsLast == false %}, {% endif %}{% endfor %}{% if InjectServiceFabric %}, bool enableLocalDev = true{% endif %})
     {
-        {% if operation.HasResult %}return {% endif %}System.Threading.Tasks.Task.Run(async () => await {{ operation.ActualOperationName }}Async({% for parameter in operation.Parameters %}{{ parameter.VariableName }}, {% endfor %}System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
+        {% if operation.HasResult %}return {% endif %}System.Threading.Tasks.Task.Run(async () => await {{ operation.ActualOperationName }}Async({% for parameter in operation.Parameters %}{{ parameter.VariableName }}, {% endfor %}System.Threading.CancellationToken.None, enableLocalDev)).GetAwaiter().GetResult();
     }
 
 {%     endif -%}
     {% template Client.Method.Documentation %}
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-    {{ operation.MethodAccessModifier }} async {% if InjectServiceFabric == false %}{{ operation.ResultType }} {% else %}System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage> {% endif %} {{ operation.ActualOperationName }}Async({% for parameter in operation.Parameters %}{{ parameter.Type }} {{ parameter.VariableName }}{% if GenerateOptionalParameters and parameter.IsOptional %} = null{% endif %}, {% endfor %}System.Threading.CancellationToken cancellationToken{% if GenerateOptionalParameters %} = default(System.Threading.CancellationToken){% endif %})
+    {{ operation.MethodAccessModifier }} async {% if InjectServiceFabric == false %}{{ operation.ResultType }} {% else %}System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage> {% endif %} {{ operation.ActualOperationName }}Async({% for parameter in operation.Parameters %}{{ parameter.Type }} {{ parameter.VariableName }}{% if GenerateOptionalParameters and parameter.IsOptional %} = null{% endif %}, {% endfor %}System.Threading.CancellationToken cancellationToken{% if GenerateOptionalParameters %} = default(System.Threading.CancellationToken){% endif %}{% if InjectServiceFabric %}, bool enableLocalDev = true{% endif %})
     {
 {%     for parameter in operation.PathParameters -%}
 {%         if parameter.IsNullable == false and parameter.IsRequired -%}
@@ -159,7 +166,7 @@ urlBuilder_.Append("{{ parameter.Name }}=").Append(System.Uri.EscapeDataString({
         var client_ = new {{ HttpClientType }}();
 {%     endif -%}
 {%     if InjectServiceFabric -%}
-        return await ServiceClient.{{operation.HttpMethodLower | capitalize}}Async(url_{% if operation.HasContent -%}, {{ operation.ContentParameter.VariableName }}{% endif -%});
+        return await ServiceClient.{{operation.HttpMethodLower | capitalize}}Async(url_{% if operation.HasContent -%}, {{ operation.ContentParameter.VariableName }}{% endif -%}, enableLocalDev);
 {%     else -%}
         try
         {
@@ -304,7 +311,7 @@ urlBuilder_.Append("{{ parameter.Name }}=").Append(System.Uri.EscapeDataString({
 
 {% if operation.HttpMethodLower != "get" -%}	
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-    {{ operation.MethodAccessModifier }} async {% if InjectServiceFabric == false -%}void {% else -%}System.Threading.Tasks.Task{% endif %} {{ operation.ActualOperationName }}FireAndForgetAsync({% for parameter in operation.Parameters %}{{ parameter.Type }} {{ parameter.VariableName }}{% if GenerateOptionalParameters and parameter.IsOptional %} = null{% endif %}, {% endfor %}System.Threading.CancellationToken cancellationToken{% if GenerateOptionalParameters %} = default(System.Threading.CancellationToken){% endif %})
+    {{ operation.MethodAccessModifier }} async {% if InjectServiceFabric == false -%}void {% else -%}System.Threading.Tasks.Task{% endif %} {{ operation.ActualOperationName }}FireAndForgetAsync({% for parameter in operation.Parameters %}{{ parameter.Type }} {{ parameter.VariableName }}{% if GenerateOptionalParameters and parameter.IsOptional %} = null{% endif %}, {% endfor %}System.Threading.CancellationToken cancellationToken{% if GenerateOptionalParameters %} = default(System.Threading.CancellationToken){% endif %}{% if InjectServiceFabric %}, bool enableLocalDev = true{% endif %})
     {
 {%     for parameter in operation.PathParameters -%}
 {%         if parameter.IsNullable == false and parameter.IsRequired -%}
@@ -361,10 +368,12 @@ urlBuilder_.Append("{{ parameter.Name }}=").Append(System.Uri.EscapeDataString({
 {%     endif -%}
         url_ = urlBuilder_.ToString();
 {% endif -%}
-		await ServiceClient.FireAndForget{{operation.HttpMethodLower | capitalize}}Async(url_{% if operation.HasContent-%}, {{ operation.ContentParameter.VariableName }}{% endif -%});
+		await ServiceClient.FireAndForget{{operation.HttpMethodLower | capitalize}}Async(url_{% if operation.HasContent-%}, {{ operation.ContentParameter.VariableName }}{% endif -%}, enableLocalDev);
 	}
 {% endif -%}
 
 {% endfor -%}
+{% if InjectServiceFabric %}
     {% template Client.Class.ConvertToString %}
+{% endif -%}
 }
