@@ -1,0 +1,35 @@
+mode: Mainline
+assembly-informational-format: '{SemVer}'
+branches:
+  epic:
+    regex: epic?[/-]
+    increment: Major
+    tag: xpre{BranchName}
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: false
+    tracks-release-branches: false
+    is-release-branch: false
+  feature:
+    regex: feature?[/-]
+    increment: Minor
+    tag: xpre{BranchName}
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: false
+    tracks-release-branches: false
+    is-release-branch: false
+  story:
+    regex: story?[/-]
+    increment: Patch
+    tag: xpre{BranchName}
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: false
+    tracks-release-branches: false
+    is-release-branch: false
+  bug:
+    regex: bug?[/-]
+    increment: Patch
+    tag: xpre{BranchName}
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: false
+    tracks-release-branches: false
+    is-release-branch: false
