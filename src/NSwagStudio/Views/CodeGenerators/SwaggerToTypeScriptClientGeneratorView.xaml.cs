@@ -5,7 +5,7 @@ using NSwagStudio.ViewModels.CodeGenerators;
 
 namespace NSwagStudio.Views.CodeGenerators
 {
-    public partial class SwaggerToTypeScriptClientGeneratorView
+    public partial class SwaggerToTypeScriptClientGeneratorView : CodeGeneratorViewBase
     {
         private readonly NSwagDocument _document;
 
