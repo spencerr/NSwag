@@ -30,6 +30,8 @@ namespace NSwag.CodeGeneration.CSharp
             InjectServiceFabric = false;
             UseStringInterpolation = false;
             ExposeJsonSerializerSettings = false;
+
+            ProtectedMethods = new string[0];
         }
 
         /// <summary>Gets or sets the full name of the base class.</summary>
