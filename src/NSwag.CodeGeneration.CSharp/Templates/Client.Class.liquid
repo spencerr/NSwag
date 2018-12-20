@@ -90,7 +90,7 @@
 {%   endif -%}
     {{ operation.MethodAccessModifier }} {% if InjectServiceFabric == false %}{{ operation.ResultType }} {% else %}System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage> {% endif %} {{ operation.ActualOperationName }}Async({% for parameter in operation.Parameters %}{{ parameter.Type }} {{ parameter.VariableName }}{% if GenerateOptionalParameters and parameter.IsOptional %} = null{% endif %}{% if parameter.IsLast == false or InjectServiceFabric %}, {% endif %}{% endfor %}{% if InjectServiceFabric %}bool enableLocalDev = true{% endif %})
     {
-        return {{ operation.ActualOperationName }}Async({% for parameter in operation.Parameters %}{{ parameter.VariableName }}, {% endfor %}System.Threading.CancellationToken.None, enableLocalDev);
+        return {{ operation.ActualOperationName }}Async({% for parameter in operation.Parameters %}{{ parameter.VariableName }}, {% endfor %}System.Threading.CancellationToken.None{% if InjectServiceFabric %}, enableLocalDev{% endif %});
     }
 
 {%     endif -%}
@@ -101,7 +101,7 @@
 {%   endif -%}
     {{ operation.MethodAccessModifier }} {% if InjectServiceFabric == false %}{{ operation.SyncResultType }} {% else %}System.Net.Http.HttpResponseMessage {% endif %} {{ operation.ActualOperationName }}({% for parameter in operation.Parameters %}{{ parameter.Type }} {{ parameter.VariableName }}{% if GenerateOptionalParameters and parameter.IsOptional %} = null{% endif %}{% if parameter.IsLast == false or InjectServiceFabric %}, {% endif %}{% endfor %}{% if InjectServiceFabric %}bool enableLocalDev = true{% endif %})
     {
-        {% if operation.HasResult %}return {% endif %}System.Threading.Tasks.Task.Run(async () => await {{ operation.ActualOperationName }}Async({% for parameter in operation.Parameters %}{{ parameter.VariableName }}, {% endfor %}System.Threading.CancellationToken.None, enableLocalDev)).GetAwaiter().GetResult();
+        {% if operation.HasResult %}return {% endif %}System.Threading.Tasks.Task.Run(async () => await {{ operation.ActualOperationName }}Async({% for parameter in operation.Parameters %}{{ parameter.VariableName }}, {% endfor %}System.Threading.CancellationToken.None{% if InjectServiceFabric == true %}, enableLocalDev{% endif %})).GetAwaiter().GetResult();
     }
 
 {%     endif -%}
@@ -164,7 +164,7 @@
         var client_ = new {{ HttpClientType }}();
 {%     endif -%}
 {%     if InjectServiceFabric -%}
-        return await ServiceClient.{{operation.HttpMethodLower | capitalize}}Async(url_{% if operation.HasContent -%}, {{ operation.ContentParameter.VariableName }}{% endif -%}, enableLocalDev);
+        return await ServiceClient.{{operation.HttpMethodLower | capitalize}}Async(url_{% if operation.HasContent -%}, {{ operation.ContentParameter.VariableName }}{% endif -%}{% if InjectServiceFabric == true %}, enableLocalDev{% endif %});
 {%     else -%}
         try
         {
@@ -380,7 +380,7 @@ urlBuilder_.Append("{{ parameter.Name }}=").Append(System.Uri.EscapeDataString({
 {%     endif -%}
         url_ = urlBuilder_.ToString();
 {% endif -%}
-		await ServiceClient.FireAndForget{{operation.HttpMethodLower | capitalize}}Async(url_{% if operation.HasContent-%}, {{ operation.ContentParameter.VariableName }}{% endif -%}, enableLocalDev);
+		await ServiceClient.FireAndForget{{operation.HttpMethodLower | capitalize}}Async(url_{% if operation.HasContent-%}, {{ operation.ContentParameter.VariableName }}{% endif -%}{% if InjectServiceFabric == true %}, enableLocalDev{% endif %});
 	}
 {% endif -%}
 {% endfor -%}
