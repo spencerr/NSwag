@@ -12,13 +12,13 @@
 {% endif -%}
     private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 {% if InjectServiceFabric %}
-	protected Renweb.Core.ApiGateway.Communication.ICustomServicePartitionClientFactory ClientFactory { get; }
+	protected Renweb.Core.ApiGateway.Communication.ICSISServicePartitionClientFactory ClientFactory { get; }
 
 	protected long? _paritionKey = null;
 	protected bool _forceServicePartitionResolver = false;
-	protected Renweb.Core.ApiGateway.Communication.CustomServicePartitionClient _serviceClient;
+	protected Renweb.Core.ApiGateway.Communication.ISISServicePartitionClient<Renweb.Core.ApiGateway.Communication.HttpCommunicationClient> _serviceClient;
 
-    public Renweb.Core.ApiGateway.Communication.CustomServicePartitionClient ServiceClient 
+    public Renweb.Core.ApiGateway.Communication.ISISServicePartitionClient<Renweb.Core.ApiGateway.Communication.HttpCommunicationClient> ServiceClient 
 	{
 		get
 		{
@@ -37,7 +37,7 @@
         _httpClient = httpClient; 
 {%     endif -%}
 {% elseif UseBaseUrl and HasBaseUrl == false -%}
-    public {{ Class }}({% if InjectServiceFabric %}System.Uri{% else %}string{% endif %} baseUrl{% if InjectServiceFabric -%}, Renweb.Core.ApiGateway.Communication.ICustomServicePartitionClientFactory clientFactory{% endif %}{% if InjectHttpClient -%}, {{ HttpClientType }} httpClient{% endif %})
+    public {{ Class }}({% if InjectServiceFabric %}System.Uri{% else %}string{% endif %} baseUrl{% if InjectServiceFabric -%}, Renweb.Core.ApiGateway.Communication.ISISServicePartitionClientFactory clientFactory{% endif %}{% if InjectHttpClient -%}, {{ HttpClientType }} httpClient{% endif %})
     {
         _baseUrl = baseUrl; 
 {%     if InjectHttpClient -%}
