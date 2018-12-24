@@ -12,7 +12,7 @@
 {% endif -%}
     private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 {% if InjectServiceFabric %}
-	protected Renweb.Core.ApiGateway.Communication.ICSISServicePartitionClientFactory ClientFactory { get; }
+	protected Renweb.Core.ApiGateway.Communication.ISISServicePartitionClientFactory ClientFactory { get; }
 
 	protected long? _paritionKey = null;
 	protected bool _forceServicePartitionResolver = false;
