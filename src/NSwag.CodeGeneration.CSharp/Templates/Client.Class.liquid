@@ -12,18 +12,18 @@
 {% endif -%}
     private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 {% if InjectServiceFabric %}
-	protected Renweb.Core.ApiGateway.Communication.ISISServicePartitionClientFactory ClientFactory { get; }
+	protected Microsoft.ServiceFabric.Services.Communication.Client.ICustomServicePartitionClientFactory ClientFactory { get; }
 
 	protected long? _paritionKey = null;
-	protected bool _forceServicePartitionResolver = false;
-	protected Renweb.Core.ApiGateway.Communication.ISISServicePartitionClient<Renweb.Core.ApiGateway.Communication.HttpCommunicationClient> _serviceClient;
+    protected string _listenerName = null;
+	protected Microsoft.ServiceFabric.Services.Communication.Client.ICustomServicePartitionClient _serviceClient;
 
-    public Renweb.Core.ApiGateway.Communication.ISISServicePartitionClient<Renweb.Core.ApiGateway.Communication.HttpCommunicationClient> ServiceClient 
+    public Microsoft.ServiceFabric.Services.Communication.Client.ICustomServicePartitionClient ServiceClient 
 	{
 		get
 		{
 			if(_serviceClient == null)
-				_serviceClient = ClientFactory.GetCustomServicePartitionClient(_baseUrl, _paritionKey, _forceServicePartitionResolver);
+				_serviceClient = ClientFactory.GetCustomServicePartitionClient(_baseUrl, _paritionKey, _listenerName);
 
 			return _serviceClient;
 		}
@@ -37,7 +37,7 @@
         _httpClient = httpClient; 
 {%     endif -%}
 {% elseif UseBaseUrl and HasBaseUrl == false -%}
-    public {{ Class }}({% if InjectServiceFabric %}System.Uri{% else %}string{% endif %} baseUrl{% if InjectServiceFabric -%}, Renweb.Core.ApiGateway.Communication.ISISServicePartitionClientFactory clientFactory{% endif %}{% if InjectHttpClient -%}, {{ HttpClientType }} httpClient{% endif %})
+    public {{ Class }}({% if InjectServiceFabric %}System.Uri{% else %}string{% endif %} baseUrl{% if InjectServiceFabric -%}, Microsoft.ServiceFabric.Services.Communication.Client.ICustomServicePartitionClientFactory clientFactory{% endif %}{% if InjectHttpClient -%}, {{ HttpClientType }} httpClient{% endif %})
     {
         _baseUrl = baseUrl; 
 {%     if InjectHttpClient -%}
