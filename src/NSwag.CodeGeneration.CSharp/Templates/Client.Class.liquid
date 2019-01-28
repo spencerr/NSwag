@@ -16,18 +16,7 @@
 
 	protected long? _paritionKey = null;
     protected string _listenerName = null;
-	protected Microsoft.ServiceFabric.Services.Communication.Client.ICustomServicePartitionClient _serviceClient;
-
-    public Microsoft.ServiceFabric.Services.Communication.Client.ICustomServicePartitionClient ServiceClient 
-	{
-		get
-		{
-			if(_serviceClient == null)
-				_serviceClient = ClientFactory.GetCustomServicePartitionClient(_baseUrl, _paritionKey, _listenerName);
-
-			return _serviceClient;
-		}
-	}
+    protected string _authorization = null;
 	
 {% endif -%}
 {% if HasConfigurationClass -%}
@@ -164,7 +153,8 @@
         var client_ = new {{ HttpClientType }}();
 {%     endif -%}
 {%     if InjectServiceFabric -%}
-        return await ServiceClient.{{operation.HttpMethodLower | capitalize}}Async(url_{% if operation.HasContent -%}, {{ operation.ContentParameter.VariableName }}{% endif -%}{% if InjectServiceFabric == true %}, enableLocalDev{% endif %});
+        var serviceClient = ClientFactory.GetCustomServicePartitionClient(_baseUrl, _paritionKey, _listenerName, _authorization);
+        return await serviceClient.{{operation.HttpMethodLower | capitalize}}Async(url_{% if operation.HasContent -%}, {{ operation.ContentParameter.VariableName }}{% endif -%}, enableLocalDev);
 {%     else -%}
         try
         {
@@ -380,7 +370,8 @@ urlBuilder_.Append("{{ parameter.Name }}=").Append(System.Uri.EscapeDataString({
 {%     endif -%}
         url_ = urlBuilder_.ToString();
 {% endif -%}
-		await ServiceClient.FireAndForget{{operation.HttpMethodLower | capitalize}}Async(url_{% if operation.HasContent-%}, {{ operation.ContentParameter.VariableName }}{% endif -%}{% if InjectServiceFabric == true %}, enableLocalDev{% endif %});
+        var serviceClient = ClientFactory.GetCustomServicePartitionClient(_baseUrl, _paritionKey, _listenerName, _authorization);
+		await serviceClient.FireAndForget{{operation.HttpMethodLower | capitalize}}Async(url_{% if operation.HasContent-%}, {{ operation.ContentParameter.VariableName }}{% endif -%}, enableLocalDev);
 	}
 {% endif -%}
 {% endfor -%}
