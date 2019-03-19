@@ -116,7 +116,7 @@
 {%         endif -%}
 {%     endfor -%}
 {% if UseStringInterpolation -%}
-        var url_ = $"{% if UseBaseUrl and InjectServiceFabric == false -%}{BaseUrl}{% endif -%}{{ operation.Path }}{% if operation.HasQueryParameters %}?{% for parameter in operation.QueryParameters %}{{ parameter.VariableName }}={ {{ parameter.VariableName }} }{% if forloop.last == false %}&{% endif %}{% endfor %}{% endif %}";
+        var url_ = $"{% if UseBaseUrl and InjectServiceFabric == false -%}{BaseUrl}{% endif -%}{{ operation.Path }}{% if operation.HasQueryParameters %}?{% for parameter in operation.QueryParameters %}{{ parameter.Name }}={ {{ parameter.VariableName }} }{% if forloop.last == false %}&{% endif %}{% endfor %}{% endif %}";
 {% else -%}
         var urlBuilder_ = new System.Text.StringBuilder();
         urlBuilder_.Append({% if UseBaseUrl %}BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/{% else %}"{% endif %}{{ operation.Path }}{% if operation.HasQueryParameters %}?{% endif %}");
