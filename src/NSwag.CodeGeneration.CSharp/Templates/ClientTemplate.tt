@@ -68,9 +68,6 @@ public partial interface I<#=Model.Class#>
 }
 <#}#>
 
-<#if(Model.InjectServiceFabric){#>
-[Renweb.Core.IoC.Domain.Attribute.IoCRegisterAttribute(Lifetime = Renweb.Core.IoC.Domain.Enum.LifetimeScopeEnum.Scope, Interface = typeof(I<#=Model.Class#>))]
-<#}#>
 <#if(Model.GenerateImplementation){#>
 [System.CodeDom.Compiler.GeneratedCode("NSwag", "<#=SwaggerDocument.ToolchainVersion#>")]
 <#=Model.ClientClassAccessModifier#> partial class <#=Model.Class#> <#if(Model.HasBaseType){#>: <#}#><#if(Model.HasBaseClass){#><#=Model.BaseClass#><#if(Model.GenerateClientInterfaces){#>, <#}#><#}#><#if(Model.GenerateClientInterfaces){#>I<#=Model.Class#><#}#>

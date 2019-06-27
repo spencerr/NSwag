@@ -1,6 +1,3 @@
-{% if InjectServiceFabric -%}
-[Renweb.Core.IoC.Domain.Attribute.IoCRegisterAttribute(Lifetime = Renweb.Core.IoC.Domain.Enum.LifetimeScopeEnum.Scope, Interface = typeof(I{{ Class }}))]
-{% endif -%}
 [System.CodeDom.Compiler.GeneratedCode("NSwag", "{{ ToolchainVersion }}")]
 {{ ClientClassAccessModifier }} partial class {{ Class }} {% if HasBaseType %}: {% endif %}{% if HasBaseClass %}{{ BaseClass }}{% if GenerateClientInterfaces %}, {% endif %}{% endif %}{% if GenerateClientInterfaces %}I{{ Class }}{% endif %}
 {
