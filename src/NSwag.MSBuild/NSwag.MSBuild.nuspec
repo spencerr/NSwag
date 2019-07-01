@@ -17,8 +17,8 @@
     <references />
   </metadata>
   <files>
-    <file src="NSwag.MSBuild.props" target="build" />
-    <file src="NSwag.MSBuild.props" target="buildCrossTargeting" />
+    <file src="SIS.NSwag.MSBuild.props" target="build" />
+    <file src="SIS.NSwag.MSBuild.props" target="buildCrossTargeting" />
 
     <file src="..\NSwag.Console\bin\Release\net461\*" target="tools/Win" />
     <file src="..\NSwag.Console.x86\bin\Release\net461\NSwag.x86.exe" target="tools/Win" />
