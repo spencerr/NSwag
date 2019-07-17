@@ -6,7 +6,7 @@
     <authors>SIS Devs</authors>
     <owners>SIS Devs</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <license type="expression">MIT</license>
+    <licenseUrl>https://github.com/RicoSuter/NSwag/blob/master/LICENSE.md</licenseUrl>
     <projectUrl>https://github.com/rwebrown/NSwag</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/RicoSuter/NSwag/master/assets/NuGetIcon.png</iconUrl>
     <description>NSwag: The Swagger API toolchain for .NET and TypeScript</description>
