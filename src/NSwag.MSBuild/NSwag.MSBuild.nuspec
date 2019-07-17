@@ -2,13 +2,13 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>SIS.NSwag.MSBuild</id>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <authors>SIS Devs</authors>
     <owners>SIS Devs</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <licenseUrl>https://github.com/RicoSuter/NSwag/blob/master/LICENSE.md</licenseUrl>
+    <license type="expression">MIT</license>
     <projectUrl>https://github.com/rwebrown/NSwag</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/NSwag/NSwag/master/assets/NuGetIcon.png</iconUrl>
+    <iconUrl>https://raw.githubusercontent.com/RicoSuter/NSwag/master/assets/NuGetIcon.png</iconUrl>
     <description>NSwag: The Swagger API toolchain for .NET and TypeScript</description>
     <tags>Swagger Documentation WebApi AspNet TypeScript CodeGen</tags>
     <copyright>Copyright © FACTS SIS, 2019</copyright>
