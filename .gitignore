@@ -74,3 +74,4 @@ UpgradeLog*.htm
 
 .editorconfig
 /samples/packages
+/src/NSwag.Console/Properties/launchSettings.json
