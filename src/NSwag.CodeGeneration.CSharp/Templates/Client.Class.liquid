@@ -150,7 +150,7 @@
         var url_ = $"{% if UseBaseUrl and InjectServiceFabric == false -%}{BaseUrl}{% endif -%}{{ operation.Path }}{% if operation.HasQueryParameters %}?{% for parameter in operation.QueryParameters %}{{ parameter.Name }}={ {{ parameter.VariableName }} }{% if forloop.last == false %}&{% endif %}{% endfor %}{% endif %}";
 {% else -%}
         var urlBuilder_ = new System.Text.StringBuilder();
-        urlBuilder_.Append({% if UseBaseUrl %}BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/{% else %}"{% endif %}{{ operation.Path }}{% if operation.HasQueryParameters %}?{% endif %}");
+        urlBuilder_.Append({% if UseBaseUrl %}BaseUrl != null ? BaseUrl{% if InjectServiceFabric %}.ToString(){% else -%}.TrimEnd('/'){% endif -%} : "").Append("/{% else %}"{% endif %}{{ operation.Path }}{% if operation.HasQueryParameters %}?{% endif %}");
 {%     for parameter in operation.PathParameters -%}
 {%         if parameter.IsOptional -%}
         if ({{ parameter.VariableName }} != null)
@@ -185,7 +185,7 @@
 {%     endif -%}
 {%     if InjectServiceFabric -%}
         var serviceClient = ClientFactory.GetCustomServicePartitionClient(_baseUrl, _paritionKey, _listenerName, _authorization);
-        return await serviceClient.{{operation.HttpMethodLower | capitalize}}Async(url_{% if operation.HasContent -%}, {{ operation.ContentParameter.VariableName }}{% endif -%}, enableLocalDev);
+        return await serviceClient.{{operation.HttpMethodLower | capitalize}}Async({% if UseStringInterpolation -%}url_{% else -%}urlBuilder_.ToString(){% endif -%}{% if operation.HasContent -%}, {{ operation.ContentParameter.VariableName }}{% endif -%}, enableLocalDev);
 {%     else -%}
         try
         {
@@ -366,8 +366,9 @@
     }
 
     {% template Client.Class.ReadObjectResponse %}
-
-    {% template Client.Class.ConvertToString %}
     {% template Client.Class.Body %}
+{% endif -%}
+{% if UseStringInterpolation == false %}
+    {% template Client.Class.ConvertToString %}
 {% endif -%}
 }
