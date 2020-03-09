@@ -150,7 +150,7 @@
         var url_ = $"{% if UseBaseUrl and InjectServiceFabric == false -%}{BaseUrl}{% endif -%}{{ operation.Path }}{% if operation.HasQueryParameters %}?{% for parameter in operation.QueryParameters %}{{ parameter.Name }}={ {{ parameter.VariableName }} }{% if forloop.last == false %}&{% endif %}{% endfor %}{% endif %}";
 {% else -%}
         var urlBuilder_ = new System.Text.StringBuilder();
-        urlBuilder_.Append({% if UseBaseUrl %}BaseUrl != null ? BaseUrl{% if InjectServiceFabric %}.ToString(){% else -%}.TrimEnd('/'){% endif -%} : "").Append("/{% else %}"{% endif %}{{ operation.Path }}{% if operation.HasQueryParameters %}?{% endif %}");
+        urlBuilder_.Append({% if InjectServiceFabric == false %}{% if UseBaseUrl %}BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/{% else %}"{% endif %}{% else %}"{% endif %}{{ operation.Path }}{% if operation.HasQueryParameters %}?{% endif %}");
 {%     for parameter in operation.PathParameters -%}
 {%         if parameter.IsOptional -%}
         if ({{ parameter.VariableName }} != null)
