@@ -12,6 +12,7 @@
     private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _responseSettings;
 {% else -%}
     private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
+{% endif -%}
 {% if InjectServiceFabric %}
 	protected Microsoft.ServiceFabric.Services.Communication.Client.ICustomServicePartitionClientFactory ClientFactory { get; }
 
