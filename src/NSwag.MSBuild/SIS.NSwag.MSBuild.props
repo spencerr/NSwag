@@ -10,7 +10,9 @@
     <NSwagExe_Core22>dotnet "$(MSBuildThisFileDirectory)../tools/NetCore22/dotnet-nswag.dll"</NSwagExe_Core22>
     <NSwagExe_Core30>dotnet "$(MSBuildThisFileDirectory)../tools/NetCore30/dotnet-nswag.dll"</NSwagExe_Core30>
     <NSwagExe_Core31>dotnet "$(MSBuildThisFileDirectory)../tools/NetCore31/dotnet-nswag.dll"</NSwagExe_Core31>
-
+    <NSwagExe_Net50>dotnet "$(MSBuildThisFileDirectory)../tools/Net50/dotnet-nswag.dll"</NSwagExe_Net50>
+	<NSwagExe_Net60>dotnet "$(MSBuildThisFileDirectory)../tools/Net60/dotnet-nswag.dll"</NSwagExe_Net60>
+	  
     <NSwagDir>$(MSBuildThisFileDirectory)../tools/Win/</NSwagDir>
     <NSwagDir_Core10>$(MSBuildThisFileDirectory)../tools/NetCore10/</NSwagDir_Core10>
     <NSwagDir_Core11>$(MSBuildThisFileDirectory)../tools/NetCore11/</NSwagDir_Core11>
@@ -19,5 +21,7 @@
     <NSwagDir_Core22>$(MSBuildThisFileDirectory)../tools/NetCore22/</NSwagDir_Core22>
     <NSwagDir_Core30>$(MSBuildThisFileDirectory)../tools/NetCore30/</NSwagDir_Core30>
     <NSwagDir_Core31>$(MSBuildThisFileDirectory)../tools/NetCore31/</NSwagDir_Core31>
+    <NSwagDir_Net50>$(MSBuildThisFileDirectory)../tools/Net50/</NSwagDir_Net50>
+	<NSwagDir_Net60>$(MSBuildThisFileDirectory)../tools/Net60/</NSwagDir_Net60>
   </PropertyGroup>
 </Project>
