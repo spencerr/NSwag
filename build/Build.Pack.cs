@@ -68,24 +68,6 @@ public partial class Build
                 );
             }
 
-            Serilog.Log.Information("Build WiX installer");
-
-            EnsureCleanDirectory(SourceDirectory / "NSwagStudio.Installer" / "bin");
-
-            MSBuild(x => x
-                .SetTargetPath(Solution.GetProject("NSwagStudio.Installer"))
-                .SetTargets("Rebuild")
-                .SetAssemblyVersion(VersionPrefix)
-                .SetFileVersion(VersionPrefix)
-                .SetInformationalVersion(VersionPrefix)
-                .SetConfiguration(Configuration)
-                .SetMaxCpuCount(Environment.ProcessorCount)
-                .SetNodeReuse(IsLocalBuild)
-                .SetVerbosity(MSBuildVerbosity.Minimal)
-                .SetProperty("Deterministic", IsServerBuild)
-                .SetProperty("ContinuousIntegrationBuild", IsServerBuild)
-            );
-
             // gather relevant artifacts
             Serilog.Log.Information("Package nuspecs");
 

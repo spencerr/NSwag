@@ -142,6 +142,11 @@ namespace NSwag.CodeGeneration.CSharp.Models
             }
         }
 
+        /// <summary>Gets or sets the type of the result with FluentResults wrapper.</summary>
+        public string FluentResultType => SyncResultType == "void" 
+            ? "System.Threading.Tasks.Task<FluentResults.Result>" 
+            : $"System.Threading.Tasks.Task<FluentResults.Result<{SyncResultType}>>";
+
         /// <summary>Gets or sets the type of the exception.</summary>
         public override string ExceptionType
         {

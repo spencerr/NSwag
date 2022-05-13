@@ -78,7 +78,7 @@ namespace NSwag.CodeGeneration.CSharp
         {
             var exceptionSchema = document.Definitions.ContainsKey("Exception") ? document.Definitions["Exception"] : null;
 
-            var resolver = new CSharpTypeResolver(settings, exceptionSchema);
+            var resolver = new SISCSharpTypeResolver(settings, exceptionSchema);
             resolver.RegisterSchemaDefinitions(document.Definitions
                 .Where(p => p.Value != exceptionSchema)
                 .ToDictionary(p => p.Key, p => p.Value));
