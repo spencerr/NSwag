@@ -1,0 +1,31 @@
+﻿{%- if ExtensionData['x-sis-type'] == null -%}
+{%- if ExtensionData['x-sis-feature'] != null -%}
+namespace {{ ExtensionData['x-sis-feature'] }} {
+{%- endif -%}
+{%- if HasDescription -%}
+/// <summary>
+/// {{ Description | csharpdocs }}
+/// </summary>
+{%- endif -%}
+[System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "{{ ToolchainVersion }}")]
+{%- if IsEnumAsBitFlags -%}
+[System.Flags]
+{%- endif -%}
+{{ TypeAccessModifier }} enum {{ ExtensionData['x-sis-feature-type'] | default: Name }}
+{
+{%- for enum in Enums %}
+{%-   if IsStringEnum -%}
+    [System.Runtime.Serialization.EnumMember(Value = @"{{ enum.Value | replace: '"', '""' }}")]
+{%-   endif -%}
+{%- if IsEnumAsBitFlags -%}
+    {{ enum.Name }} = {{ enum.InternalFlagValue }},
+{%- else -%}
+    {{ enum.Name }} = {{ enum.InternalValue }},
+{%- endif -%}
+
+{%- endfor %}
+}
+{%- if ExtensionData['x-sis-feature'] != null -%}
+}
+{%- endif -%}
+{%- endif -%}

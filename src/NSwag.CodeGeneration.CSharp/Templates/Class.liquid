@@ -9,7 +9,7 @@ namespace {{ ExtensionData['x-sis-feature'] }} {
 {%- endif -%}
 {%- if HasDiscriminator -%}
 {%- if UseSystemTextJson -%}
-[JsonInheritanceConverter(typeof({{ ExtensionData['x-sis-feature-type'] | ClassName }}), "{{ Discriminator }}")]
+[JsonInheritanceConverter(typeof({{ ExtensionData['x-sis-feature-type'] | default: ClassName }}), "{{ Discriminator }}")]
 {%- else -%}
 [Newtonsoft.Json.JsonConverter(typeof(JsonInheritanceConverter), "{{ Discriminator }}")]
 {%- endif -%}
@@ -31,10 +31,10 @@ namespace {{ ExtensionData['x-sis-feature'] }} {
 [System.Obsolete{% if HasDeprecatedMessage %}({{ DeprecatedMessage | literal }}){% endif %}]
 {% endif -%}
 {%- template Class.Annotations -%}
-{{ TypeAccessModifier }} {% if IsAbstract %}abstract {% endif %}partial {% if GenerateNativeRecords %}record{% else %}class{% endif %} {{ ExtensionData['x-sis-feature-type'] | ClassName }} {%- template Class.Inheritance %}
+{{ TypeAccessModifier }} {% if IsAbstract %}abstract {% endif %}partial {% if GenerateNativeRecords %}record{% else %}class{% endif %} {{ ExtensionData['x-sis-feature-type'] | default: ClassName }} {%- template Class.Inheritance %}
 {
 {%- if IsTuple -%}
-    public {{ ExtensionData['x-sis-feature-type'] | ClassName }}({%- for tupleType in TupleTypes %}{{ tupleType }} item{{ forloop.index }}{%- if forloop.last == false %}, {% endif %}{% endfor %}) : base({%- for tupleType in TupleTypes %}item{{ forloop.index }}{%- if forloop.last == false %}, {% endif %}{% endfor %})
+    public {{ ExtensionData['x-sis-feature-type'] | default: ClassName }}({%- for tupleType in TupleTypes %}{{ tupleType }} item{{ forloop.index }}{%- if forloop.last == false %}, {% endif %}{% endfor %}) : base({%- for tupleType in TupleTypes %}item{{ forloop.index }}{%- if forloop.last == false %}, {% endif %}{% endfor %})
     {
     }
 
