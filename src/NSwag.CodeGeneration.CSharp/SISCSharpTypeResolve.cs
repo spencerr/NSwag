@@ -27,7 +27,7 @@ public class SISCSharpTypeResolver : CSharpTypeResolver
 
         if (schema.ActualSchema.ExtensionData?.TryGetValue("x-sis-feature", out var feature) == true)
         {
-            return base.Resolve(schema, isNullable, typeNameHint).Replace($"{feature}_", $"{feature}.");
+            return base.Resolve(schema, isNullable, typeNameHint).Replace($"{feature.ToString().Replace(".", "")}_", $"{feature}.");
         }
 
         return base.Resolve(schema, isNullable, typeNameHint);
