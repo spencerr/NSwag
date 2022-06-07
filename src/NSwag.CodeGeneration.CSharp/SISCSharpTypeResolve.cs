@@ -20,10 +20,12 @@ public class SISCSharpTypeResolver : CSharpTypeResolver
             return typeName.ToString();
         }
 
-        if (schema.ActualSchema.ExtensionData?.TryGetValue("x-sis-feature", out var feature) == true)
+        if (schema.ActualSchema.ExtensionData?.TryGetValue("x-sis-feature", out var featureNamespace) == true
+            && schema.ActualSchema.ExtensionData?.TryGetValue("x-sis-feature-type", out var featureType) == true)
         {
-            var featureName = feature.ToString()!.Replace(".", "");
-            return base.Resolve(schema, isNullable, typeNameHint).Replace($"{featureName}_", $"{feature}.");
+            return $"{featureNamespace}.{featureType}";
+            //var featureName = feature.ToString()!.Replace(".", "");
+            //return base.Resolve(schema, isNullable, typeNameHint).Replace($"{featureName}_", $"{feature}.");
         }
 
         return base.Resolve(schema, isNullable, typeNameHint);
