@@ -71,10 +71,15 @@ public partial class Build
             // gather relevant artifacts
             Serilog.Log.Information("Package nuspecs");
 
+            var apiDescriptionClientNuSpec = SourceDirectory / "NSwag.ApiDescription.Client" / "NSwag.ApiDescription.Client.nuspec";
+            var content = TextTasks.ReadAllText(apiDescriptionClientNuSpec);
+            content = content.Replace("<dependency id=\"NSwag.MSBuild\" version=\"1.0.0\" />", "<dependency id=\"NSwag.MSBuild\" version=\"" + VersionPrefix + "\" />");
+            TextTasks.WriteAllText(apiDescriptionClientNuSpec, content);
+
             var nuspecs = new[]
             {
+                apiDescriptionClientNuSpec,
                 SourceDirectory / "NSwag.MSBuild" / "NSwag.MSBuild.nuspec",
-                SourceDirectory / "NSwag.ApiDescription.Client" / "NSwag.ApiDescription.Client.nuspec",
                 SourceDirectory / "NSwagStudio.Chocolatey" / "NSwagStudio.nuspec"
             };
 
@@ -99,7 +104,7 @@ public partial class Build
 
             // patch npm version
             var npmPackagesFile = SourceDirectory / "NSwag.Npm" / "package.json";
-            var content = TextTasks.ReadAllText(npmPackagesFile);
+            content = TextTasks.ReadAllText(npmPackagesFile);
             content = Regex.Replace(content, @"""version"": "".*""", @"""version"": """ + VersionPrefix + @"""");
             TextTasks.WriteAllText(npmPackagesFile, content);
 
