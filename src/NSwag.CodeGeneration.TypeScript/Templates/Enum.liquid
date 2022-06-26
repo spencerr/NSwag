@@ -1,0 +1,16 @@
+﻿{%- if ExtensionData['x-typescript-shared-type'] == null -%}
+{%- if ExtensionData['x-namespace'] != null -%}
+namespace {{ ExtensionData['x-namespace'] }} {
+{%- endif -%}
+{%- if HasDescription -%}
+/** {{ Description }} */
+{%- endif -%}
+{% if ExportTypes %}export {% endif %}enum {{ ExtensionData['x-type'] | default: Name }} {
+{%- for enumeration in Enums -%}
+    {{ enumeration.Name }} = {{ enumeration.Value }},
+{%- endfor -%}
+}
+{%- if ExtensionData['x-namespace'] != null -%}
+}
+{%- endif -%}
+{%- endif -%}

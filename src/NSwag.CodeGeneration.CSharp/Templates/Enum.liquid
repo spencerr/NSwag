@@ -1,6 +1,6 @@
-﻿{%- if ExtensionData['x-sis-type'] == null -%}
-{%- if ExtensionData['x-sis-feature'] != null -%}
-namespace {{ ExtensionData['x-sis-feature'] }} {
+﻿{%- if ExtensionData['x-csharp-shared-type'] == null -%}
+{%- if ExtensionData['x-namespace'] != null -%}
+namespace {{ ExtensionData['x-namespace'] }} {
 {%- endif -%}
 {%- if HasDescription -%}
 /// <summary>
@@ -11,7 +11,7 @@ namespace {{ ExtensionData['x-sis-feature'] }} {
 {%- if IsEnumAsBitFlags -%}
 [System.Flags]
 {%- endif -%}
-{{ TypeAccessModifier }} enum {{ ExtensionData['x-sis-feature-type'] | default: Name }}
+{{ TypeAccessModifier }} enum {{ ExtensionData['x-type'] | default: Name }}
 {
 {%- for enum in Enums %}
 {%-   if IsStringEnum -%}
@@ -25,7 +25,7 @@ namespace {{ ExtensionData['x-sis-feature'] }} {
 
 {%- endfor %}
 }
-{%- if ExtensionData['x-sis-feature'] != null -%}
+{%- if ExtensionData['x-namespace'] != null -%}
 }
 {%- endif -%}
 {%- endif -%}

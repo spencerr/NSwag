@@ -28,7 +28,7 @@ namespace NSwag.CodeGeneration.TypeScript
         /// <param name="settings">The settings.</param>
         /// <exception cref="ArgumentNullException"><paramref name="document" /> is <see langword="null" />.</exception>
         public TypeScriptClientGenerator(OpenApiDocument document, TypeScriptClientGeneratorSettings settings)
-            : this(document, settings, new TypeScriptTypeResolver(settings.TypeScriptGeneratorSettings))
+            : this(document, settings, new SISTypeScriptTypeResolver(settings.TypeScriptGeneratorSettings))
         {
         }
 

@@ -1,21 +1,17 @@
 ﻿using NJsonSchema;
-using NJsonSchema.CodeGeneration.CSharp;
+using NJsonSchema.CodeGeneration.TypeScript;
 
-namespace NSwag.CodeGeneration.CSharp;
+namespace NSwag.CodeGeneration.TypeScript;
 
-public class SISCSharpTypeResolver : CSharpTypeResolver
+public class SISTypeScriptTypeResolver : TypeScriptTypeResolver
 {
-    public SISCSharpTypeResolver(CSharpGeneratorSettings settings) : base(settings)
-    {
-    }
-
-    public SISCSharpTypeResolver(CSharpGeneratorSettings settings, JsonSchema exceptionSchema) : base(settings, exceptionSchema)
+    public SISTypeScriptTypeResolver(TypeScriptGeneratorSettings settings) : base(settings)
     {
     }
 
     public override string Resolve(JsonSchema schema, bool isNullable, string typeNameHint)
     {
-        if (schema.ActualSchema.ExtensionData?.TryGetValue("x-csharp-shared-type", out var typeName) == true)
+        if (schema.ActualSchema.ExtensionData?.TryGetValue("x-typescript-shared-type", out var typeName) == true)
         {
             return typeName.ToString();
         }

@@ -12,6 +12,11 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Templates\Class.liquid" />
+    <None Remove="Templates\Enum.liquid" />
+    <None Remove="Templates\Interface.liquid" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\NSwag.CodeGeneration\NSwag.CodeGeneration.csproj" />
   </ItemGroup>
   <ItemGroup>
