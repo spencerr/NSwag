@@ -154,6 +154,22 @@ namespace NSwag.Commands.CodeGeneration
             set { Settings.GenerateSyncMethods = value; }
         }
 
+        [Argument(Name = "GenerateFluentResultMethods", IsRequired = false,
+                  Description = "Specifies whether to generate fluent result methods (recommended, default: false).")]
+        public bool GenerateFluentResultMethods
+        {
+            get { return Settings.GenerateFluentResultMethods; }
+            set { Settings.GenerateFluentResultMethods = value; }
+        }
+
+        [Argument(Name = "GenerateHttpResponseMethods", IsRequired = false,
+                  Description = "Specifies whether to generate http response methods (recommended, default: false).")]
+        public bool GenerateHttpResponseMethods
+        {
+            get { return Settings.GenerateHttpResponseMethods; }
+            set { Settings.GenerateHttpResponseMethods = value; }
+        }
+
         [Argument(Name = "GeneratePrepareRequestAndProcessResponseAsAsyncMethods", IsRequired = false,
                   Description = "Specifies whether to generate PrepareRequest and ProcessResponse methods as asynchronous methods (if true, both must be defined in the base class or in the partial class, default: false).")]
         public bool GeneratePrepareRequestAndProcessResponseAsAsyncMethods

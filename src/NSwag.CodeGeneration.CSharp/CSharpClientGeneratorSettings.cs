@@ -80,6 +80,16 @@ namespace NSwag.CodeGeneration.CSharp
         public bool GenerateSyncMethods { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to generate fluent result methods (recommended, default: false).
+        /// </summary>
+        public bool GenerateFluentResultMethods { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to generate http response result methods (recommended, default: false).
+        /// </summary>
+        public bool GenerateHttpResponseMethods { get; set; }
+
+        /// <summary>
         /// Gets or sets the HttpClient type which will be used in the generation of the client code. By default the System.Net.Http.HttpClient
         /// will be used, but this can be overridden. Just keep in mind that the type you specify has the same default HttpClient method signatures.
         /// </summary>

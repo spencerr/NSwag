@@ -113,6 +113,10 @@ namespace NSwag.CodeGeneration.CSharp.Models
         /// <summary>Gets or sets a value indicating whether to generate synchronous methods (not recommended, default: false).</summary>
         public bool GenerateSyncMethods => _settings.GenerateSyncMethods;
 
+        public bool GenerateFluentResultMethods => _settings.GenerateFluentResultMethods;
+
+        public bool GenerateHttpResponseMethods => _settings.GenerateHttpResponseMethods;
+
         /// <summary>Gets or sets the client class access modifier.</summary>
         public string ClientClassAccessModifier => _settings.ClientClassAccessModifier;
 
