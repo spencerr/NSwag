@@ -4,10 +4,9 @@ NSwag | [NJsonSchema](http://njsonschema.org) | [Apimundo](https://apimundo.com)
 
 [![NuGet Version](https://img.shields.io/nuget/v/NSwag.Core.svg)](https://www.nuget.org/packages?q=NSwag)
 [![npm](https://img.shields.io/npm/v/nswag.svg)](https://www.npmjs.com/package/nswag)
-[![MyGet](https://img.shields.io/myget/nswag/v/NSwag.Core.svg?label=preview%20nuget)](https://www.myget.org/feed/Packages/nswag)
+[![NuGet Version Preview](https://img.shields.io/nuget/vpre/NSwag.Core.svg)](https://www.nuget.org/packages?q=NSwag)
 [![build](https://github.com/RicoSuter/NSwag/actions/workflows/build.yml/badge.svg)](https://github.com/RicoSuter/NSwag/actions/workflows/build.yml)
-[![Gitter](https://img.shields.io/badge/gitter-join%20chat-1dce73.svg)](https://gitter.im/NSwag/NSwag)
-[![Discord](https://img.shields.io/badge/Discord-join%20chat-1dce73.svg)](https://discord.gg/4x48JjUT)
+[![Discord](https://img.shields.io/badge/Discord-join%20chat-1dce73.svg)](https://discord.gg/BxQNy25WF6)
 [![StackOverflow](https://img.shields.io/badge/questions-on%20StackOverflow-orange.svg?style=flat)](http://stackoverflow.com/questions/tagged/nswag)
 [![Wiki](https://img.shields.io/badge/docs-in%20wiki-orange.svg?style=flat)](https://github.com/RicoSuter/nswag/wiki)
 [![Backers on Open Collective](https://opencollective.com/NSwag/backers/badge.svg)](#backers) 
@@ -168,7 +167,7 @@ public class Startup
         ...
 
         app.UseOpenApi(); // serve OpenAPI/Swagger documents
-        app.UseSwaggerUi3(); // serve Swagger UI
+        app.UseSwaggerUi(); // serve Swagger UI
         app.UseReDoc(); // serve ReDoc UI
     }
 }

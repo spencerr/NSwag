@@ -16,6 +16,8 @@
     <references />
   </metadata>
   <files>
+    <file src="..\..\artifacts\bin\NSwagStudio.Installer\$configuration$\NSwagStudio.msi" target="tools"/>
+
     <file src="chocolateyInstall.ps1" target="tools"/>
     <file src="chocolateyUninstall.ps1" target="tools"/>
 
