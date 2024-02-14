@@ -66,23 +66,23 @@ public partial class Build
                 );
             }
 
-            Serilog.Log.Information("Build WiX installer");
+            //Serilog.Log.Information("Build WiX installer");
 
-            (SourceDirectory / "NSwagStudio.Installer" / "bin").CreateOrCleanDirectory();
+            //(SourceDirectory / "NSwagStudio.Installer" / "bin").CreateOrCleanDirectory();
 
-            MSBuild(x => x
-                .SetTargetPath(GetProject("NSwagStudio.Installer"))
-                .SetTargets("Rebuild")
-                .SetAssemblyVersion(VersionPrefix)
-                .SetFileVersion(VersionPrefix)
-                .SetInformationalVersion(VersionPrefix)
-                .SetConfiguration(Configuration)
-                .SetMaxCpuCount(Environment.ProcessorCount)
-                .SetNodeReuse(IsLocalBuild)
-                .SetVerbosity(MSBuildVerbosity.Minimal)
-                .SetProperty("Deterministic", IsServerBuild)
-                .SetProperty("ContinuousIntegrationBuild", IsServerBuild)
-            );
+            //MSBuild(x => x
+            //    .SetTargetPath(GetProject("NSwagStudio.Installer"))
+            //    .SetTargets("Rebuild")
+            //    .SetAssemblyVersion(VersionPrefix)
+            //    .SetFileVersion(VersionPrefix)
+            //    .SetInformationalVersion(VersionPrefix)
+            //    .SetConfiguration(Configuration)
+            //    .SetMaxCpuCount(Environment.ProcessorCount)
+            //    .SetNodeReuse(IsLocalBuild)
+            //    .SetVerbosity(MSBuildVerbosity.Minimal)
+            //    .SetProperty("Deterministic", IsServerBuild)
+            //    .SetProperty("ContinuousIntegrationBuild", IsServerBuild)
+            //);
 
             // gather relevant artifacts
             Serilog.Log.Information("Package nuspecs");
@@ -96,7 +96,7 @@ public partial class Build
             {
                 apiDescriptionClientNuSpec,
                 SourceDirectory / "NSwag.MSBuild" / "NSwag.MSBuild.nuspec",
-                SourceDirectory / "NSwagStudio.Chocolatey" / "NSwagStudio.nuspec"
+                //SourceDirectory / "NSwagStudio.Chocolatey" / "NSwagStudio.nuspec"
             };
 
             foreach (var nuspec in nuspecs)
@@ -110,8 +110,8 @@ public partial class Build
             }
 
             var artifacts = Array.Empty<AbsolutePath>()
-                .Concat(RootDirectory.GlobFiles("**/Release/**/NSwag*.nupkg"))
-                .Concat(SourceDirectory.GlobFiles("**/Release/**/NSwagStudio.msi"));
+                .Concat(RootDirectory.GlobFiles("**/Release/**/NSwag*.nupkg"));
+                //.Concat(SourceDirectory.GlobFiles("**/Release/**/NSwagStudio.msi"));
 
             foreach (var artifact in artifacts)
             {
@@ -129,7 +129,7 @@ public partial class Build
             ZipFile.CreateFromDirectory(NSwagStudioBinaries, ArtifactsDirectory / "NSwag.zip");
 
             // NSwagStudio.msi
-            CopyFileToDirectory(ArtifactsDirectory / "bin" / "NSwagStudio.Installer" / Configuration / "NSwagStudio.msi", ArtifactsDirectory);
+            //CopyFileToDirectory(ArtifactsDirectory / "bin" / "NSwagStudio.Installer" / Configuration / "NSwagStudio.msi", ArtifactsDirectory);
         });
 }
 

@@ -89,7 +89,7 @@ partial class Build : NukeBuild
 
     protected override void OnBuildInitialized()
     {
-        SolutionFile = IsRunningOnWindows ? Solution.Path : SourceDirectory / "NSwag.NoInstaller.slnf";
+        SolutionFile = SourceDirectory / "NSwag.NoInstaller.slnf";
 
         VersionPrefix = DetermineVersionPrefix();
 
