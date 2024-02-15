@@ -120,7 +120,15 @@ namespace NSwag.CodeGeneration.CSharp.Models
         {
             get
             {
-                if (_settings != null && WrapResponse && UnwrappedResultType != "FileResponse")
+                return UnwrappedResultType;
+            }
+        }
+
+        public string WrappedSyncResultType
+        {
+            get
+            {
+                if (_settings != null && UnwrappedResultType != "FileResponse")
                 {
                     return UnwrappedResultType == "void"
                         ? _settings.ResponseClass.Replace("{controller}", ControllerName)
@@ -139,6 +147,15 @@ namespace NSwag.CodeGeneration.CSharp.Models
                 return SyncResultType == "void"
                     ? "System.Threading.Tasks.Task"
                     : "System.Threading.Tasks.Task<" + SyncResultType + ">";
+            }
+        }
+
+        /// <summary>Gets or sets the type of the result.</summary>
+        public string WrappedResultType
+        {
+            get
+            {
+                return "System.Threading.Tasks.Task<" + WrappedSyncResultType + ">";
             }
         }
 
